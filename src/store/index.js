@@ -6,7 +6,8 @@ const store = new Vuex.Store({
   state: {
     web3: null,
     wallet_address: null,
-    badChainId:false
+    badChainId:false,
+    allDone:false
   },
 
   action: {},
@@ -23,7 +24,12 @@ const store = new Vuex.Store({
     setNetwork(state, payload) {
       // 变更状态
       state.badChainId = payload.badChainId;
+    },
+    setAllDone(state, payload) {
+      // 变更状态
+      state.allDone = payload.type;
     }
+
   },
 });
 export default store;

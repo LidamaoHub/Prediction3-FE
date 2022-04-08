@@ -8,12 +8,11 @@
 <script>
 // @ is an alias to /src
 import NavHeader from "@/components/Nav.vue";
-import Demo from '@/components/Demo.vue'
 import Detail from "./Detail/detail.vue"
 export default {
   name: 'Home',
   components: {
-      Demo,NavHeader,Detail
+      NavHeader,Detail
   },
   mounted(){
   }
