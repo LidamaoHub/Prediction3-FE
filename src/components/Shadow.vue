@@ -2,7 +2,7 @@
     <div class="network-shadow" v-if="badChainId">
       <div class="body">
         <div class="title">This feature is not yet supported on this network</div>
-      <div class="content">Please change to the rinkeby network</div>
+      <div class="content">Please change to the Matic network</div>
        <a-button type="primary" @click='change_chain'>
       Change Network
     </a-button>
