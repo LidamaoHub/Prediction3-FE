@@ -1,8 +1,8 @@
 const config = {
   chainId: "0x4",
-  token_address: "0x51d6a47f72234f6945Cf325dBCb3169Fa06c77e6",
-  nft_address:"0x64Fc97C83BEfff5f8048b6FB2255945591A58036",
-  pred_address: "0x6f29B253bea320d99Ed625982fcbaF6e204d808A"
+  token_address: "0x15e11E29AdE9909f9B24e5aE950f5c4880a5Cc4F",
+  nft_address:"0x221e2ee1b904d2a6ba9dd8ab630c4ac7d704895d",
+  pred_address: "0x99C8d8280D48fa7165bAE400398c30b6d9eC78b7"
 };
 
 export default config;

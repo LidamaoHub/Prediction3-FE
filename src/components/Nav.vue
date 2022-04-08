@@ -17,7 +17,7 @@
           >Connect Wallet</a-button
         >
         <div class="wallet btn" v-else>
-          <div class="balance">{{ balance }} MATIC</div>
+          <div class="balance">{{ balance }} Matic</div>
           <div class="division"></div>
           <div class="address">
             {{
