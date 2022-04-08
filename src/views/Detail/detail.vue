@@ -480,11 +480,9 @@ export default {
       if (self.shareInfo.claimed) {
         return 0;
       }
-      console.log('sel',self.userSide,self.winner)
       if(self.userSide!=self.winner){
         return 0
       }
-      console.log(self.vote_info.voteState, self.userSide);
       if (self.vote_info.voteState == 3) {
         let sideShare =
           self.userSide == "SideA"

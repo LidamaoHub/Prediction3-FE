@@ -4,7 +4,7 @@
     <div class="body">
       <div class="container">
         <div class="content">
-          If you have the Family NFT ,You can claim nft holdings * 1000 tokens
+          If you have the Family NFT ,You can claim nft holdings * 1000 tokens, that might be slow
         </div>
         <div class="user_info">
           <a-statistic
@@ -68,19 +68,17 @@ export default {
   methods: {
     async get_balance() {
       let self = this;
-      console.log(self.wallet_address);
 
-      console.log("token_balance", balance);
     },
     async getNftList() {
       let self = this;
-      let wallet = self.wallet_address;
-      console.log(self.nftContract);
-      let token_id = await self.nftContract.tokenId();
+      let token_id = 63;
       token_id = parseInt(token_id);
       let token_list = [];
-      for (let i = 0; i < token_id; i++) {
-        if (self.wallet_address == (await self.nftContract.ownerOf(i))) {
+      
+      for (let i = 1; i < token_id; i++) {
+        let add = await self.nftContract.ownerOf(i);
+        if (self.wallet_address == add) {
           token_list.push(i);
         }
       }
@@ -90,10 +88,8 @@ export default {
     },
     async claim() {
       let self = this;
-      console.log(self.web3);
       self.btn_loading = true;
       let token_list = await self.token_list;
-      console.log(token_list);
       self.contract.claim(token_list).then(
         async (tx) => {
           await tx.wait();
@@ -131,7 +127,6 @@ export default {
       let balance = await token_contract.balanceOf(self.wallet_address);
       balance = self.$ethers.utils.formatEther(balance);
       self.balance = balance;
-      console.log(balance);
 
       let nft_contract = new self.$ethers.Contract(
         nft_address,
@@ -139,6 +134,7 @@ export default {
         self.web3
       );
       self.nftContract = nft_contract;
+      
       await self.getNftList();
       await self.get_can_claim();
     },
@@ -152,7 +148,6 @@ export default {
   watch: {
     allDone() {
       let self = this;
-      console.log("ready");
       self.init();
     },
   },

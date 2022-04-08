@@ -135,7 +135,6 @@ export default {
       self.predContract.arbitrate(self.result).then(
         async (tx) => {
           await tx.wait();
-          console.log("success",tx)
       self.loading.submit = false
           self.$emit("refresh")
 
