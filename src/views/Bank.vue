@@ -72,8 +72,9 @@ export default {
     },
     async getNftList() {
       let self = this;
-      let token_id = 63;
+      let token_id = await this.nftContract.tokenId();
       token_id = parseInt(token_id);
+      
       let token_list = [];
       
       for (let i = 1; i < token_id; i++) {

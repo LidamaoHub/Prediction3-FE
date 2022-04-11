@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "ant-design-vue": "^1.7.8",
+    "axios": "^0.26.1",
     "core-js": "^3.6.5",
     "decimal.js": "^10.3.1",
     "ethers": "^5.6.1",
+    "ipfs-http-client": "^56.0.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vue2-boring-avatars": "0.3.4",

@@ -16,6 +16,12 @@ const routes = [
     name: 'Bank',
     component: () => import(/* webpackChunkName: "about" */ '../views/Bank.vue')
 
+  },
+  {
+    path: '/ipfs',
+    name: 'IPFS',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Ipfs.vue')
+
   }
  
 ]

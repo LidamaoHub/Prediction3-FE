@@ -2,7 +2,7 @@
     <div class="network-shadow" v-if="badChainId">
       <div class="body">
         <div class="title">This feature is not yet supported on this network</div>
-      <div class="content">Please change to the Matic network</div>
+      <div class="content">Please change to the {{chainName}} network</div>
        <a-button type="primary" @click='change_chain'>
       Change Network
     </a-button>
@@ -13,8 +13,17 @@
 <script>
 import { mapState } from "vuex";
 import config from "@/config"
-
+let chainName = config.chainName
 export default {
+  data(){
+    return {
+      chainName:""
+    }
+  },
+  async mounted(){
+let self = this
+self.chainName = chainName
+  },
     methods:{
          async change_chain() {
       let self = this;

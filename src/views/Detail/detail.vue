@@ -5,15 +5,16 @@
         <a-spin :spinning="loading.basic_loading">
           <a-card
             hoverable
-            title="光哥的朋友会在2022年4月16日前还钱吗?"
             class="card"
           >
+          <div class="card-title">Topic:&nbsp;{{page_info.title}}</div>
+          <div class="desc">Description:&nbsp;{{page_info.description}}</div>
             <div class="content">
               <a-card >
-                <div>A选项:至少还一点</div>
+                <div>A Side:{{page_info.options[0]}}</div>
               </a-card>
               <a-card >
-                <div>B选项:根本不会还钱</div>
+                <div>B Side:{{page_info.options[1]}}</div>
               </a-card>
             </div>
             <a-steps
@@ -235,7 +236,6 @@ import AdminCard from "@/components/AdminCard";
 import NetworkShadow from "@/components/Shadow";
 import pred_abi from "@/abi/pred_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
-const pred_address = config.pred_address;
 const token_address = config.token_address;
 
 import Mixin from "@/mixin/mixin.vue";
@@ -251,6 +251,14 @@ export default {
         claimLoading:false,
         basic_loading: true,
       modal_loading: false,
+      },
+      pred_address:"",
+      page_info:{
+        deadline:0,
+        description:"",
+        options:['',''],
+        title:""
+        
       },
       
       contract: null,
@@ -277,6 +285,7 @@ export default {
         percentB: 0,
         shareA: 0,
         shareB: 0,
+        pred_intro_hash:""
       },
       token_info: {
         token_name: "",
@@ -302,6 +311,7 @@ export default {
     },
   },
   methods: {
+
     async claim() {
       let self = this;
       self.loading.claimLoading = true
@@ -324,6 +334,9 @@ export default {
     async init() {
       //TODO userSide 变更后没有改变
       let self = this;
+      let pageInfo = self.$route
+      let pred_address = pageInfo.query.pred_address 
+      self.pred_address = pred_address
       let contract = await new self.$ethers.Contract(
         pred_address,
         pred_abi,
@@ -354,7 +367,7 @@ export default {
       let signer = self.web3.getSigner();
       let tokenContract = self.tokenContract.connect(signer);
       tokenContract
-        .approve(pred_address, self.$ethers.utils.parseEther("200000000"))
+        .approve(self.pred_address, self.$ethers.utils.parseEther("200000000"))
         .then(
           async (result) => {
             await result.wait();
@@ -370,9 +383,10 @@ export default {
 
     async getAllowance() {
       let self = this;
+
       let allowance = await self.tokenContract.allowance(
         self.wallet_address,
-        pred_address
+        self.pred_address
       );
       self.allowance = parseInt(Number(allowance));
     },
@@ -406,10 +420,8 @@ export default {
         },
         (error) => {
           self.loading.modal_loading = false;
-          let m = error.error ? error.error.message : error.message;
-          self.$notification.error({
-            message: m,
-          });
+          self.dealError(error)
+          
         }
       );
     },
@@ -427,7 +439,9 @@ export default {
     async initBasicInfo() {
       let self = this;
       let predInfo = await self.contract.predictionInfo();
-
+      let meta =await self.contract.MetaHash()
+      console.log('meta',meta)
+      console.log('pred',predInfo)
       let token_name = await self.tokenContract.symbol();
       self.token_info.token_name = token_name;
       let [
@@ -439,9 +453,8 @@ export default {
         arbiter,
         sharePrice,
         fee,
+        pred_intro_hash
       ] = predInfo;
-
-      // let predStep = predInfo[1]
       sideAShares = parseInt(Number(sideAShares));
       sideBShares = parseInt(Number(sideBShares));
 
@@ -464,6 +477,7 @@ export default {
         percentA,
         percentB,
         fee,
+        pred_intro_hash,
         shareA: sideAShares,
         shareB: sideBShares,
       };
@@ -471,6 +485,11 @@ export default {
         let winner = await self.contract.winner();
         self.winner = parseInt(winner) == 1 ? "SideA" : "SideB";
       }
+      console.log(pred_intro_hash)
+      self.$http.get(`https://ipfs.infura.io/ipfs/${pred_intro_hash}`).then(data=>{
+        console.log("page_info",data.data)
+        self.page_info = data.data
+      })
     },
   },
   computed: {
@@ -537,7 +556,15 @@ export default {
   .card {
     border-radius: 5px;
     margin-bottom: 20px;
-
+.card-title{
+  font-size:16px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.desc{
+  margin-bottom: 20px;
+  font-size:14px;
+}
     .small-desc {
       font-size: 12px;
     }
