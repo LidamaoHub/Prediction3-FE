@@ -1,11 +1,9 @@
 <template>
   <div class="detail-page">
-    <div class="all" :class="{ withShadow: badChainId }">
-      <div class="container">
         <a-spin :spinning="loading.basic_loading">
           <a-card hoverable class="card">
             <div class="card-title">Topic:&nbsp;{{ page_info.title }}</div>
-            <div class="desc">
+            <div class="description">
               Description:&nbsp;{{ page_info.description }}
             </div>
             <div class="content">
@@ -183,7 +181,6 @@
           :predAdminAddress="vote_info.arbiter"
           :predAddress="pred_address"
         />
-      </div>
 
       <a-modal
         v-model="showModal"
@@ -241,16 +238,13 @@
           </a-col>
         </a-row>
       </a-modal>
-    </div>
 
-    <network-shadow />
   </div>
 </template>
 <script>
 import config from "@/config";
 
 import AdminCard from "@/components/AdminCard";
-import NetworkShadow from "@/components/Shadow";
 import pred_abi from "@/abi/pred_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
 const token_address = config.token_address;
@@ -259,7 +253,7 @@ import Mixin from "@/mixin/mixin.vue";
 
 export default {
   mixins: [Mixin],
-  components: { NetworkShadow, AdminCard },
+  components: {  AdminCard },
   data() {
     return {
       change_network: false,
@@ -371,7 +365,6 @@ export default {
       await self.getAllowance();
       await self.getUserShare();
       let claimed = await self.contract.claimedList(self.wallet_address);
-
       self.shareInfo.claimed = claimed;
     },
     fromWei(num) {
@@ -413,7 +406,7 @@ export default {
       self.voteModal = {
         side: 0,
         amount: 1,
-      };
+      }
     },
     openModal(side) {
       let self = this;
@@ -437,7 +430,7 @@ export default {
         },
         (error) => {
           self.loading.modal_loading = false;
-          self.dealError(error);
+          self.dealError(error.data);
         }
       );
     },
@@ -546,12 +539,7 @@ export default {
   }
 }
 .detail-page {
-  margin-top: 20px;
-  .all {
-    &.withShadow {
-      filter: blur(7px);
-    }
-  }
+  
 
   .ant-btn-primary {
     &.first {
@@ -579,7 +567,7 @@ export default {
       font-weight: bold;
       margin-bottom: 20px;
     }
-    .desc {
+    .description {
       margin-bottom: 20px;
       font-size: 14px;
     }

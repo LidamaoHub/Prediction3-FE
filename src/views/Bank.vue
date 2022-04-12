@@ -46,7 +46,7 @@ import { mapState } from "vuex";
 import NavHeader from "@/components/Nav.vue";
 import config from "@/config";
 const token_address = config.token_address;
-const nft_address = config.nft_address;
+const nft_address = "0x221e2ee1b904d2a6ba9dd8ab630c4ac7d704895d";
 export default {
   mixins: [Mixin],
   components: {
