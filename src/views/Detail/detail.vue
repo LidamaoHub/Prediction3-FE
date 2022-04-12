@@ -3,18 +3,17 @@
     <div class="all" :class="{ withShadow: badChainId }">
       <div class="container">
         <a-spin :spinning="loading.basic_loading">
-          <a-card
-            hoverable
-            class="card"
-          >
-          <div class="card-title">Topic:&nbsp;{{page_info.title}}</div>
-          <div class="desc">Description:&nbsp;{{page_info.description}}</div>
+          <a-card hoverable class="card">
+            <div class="card-title">Topic:&nbsp;{{ page_info.title }}</div>
+            <div class="desc">
+              Description:&nbsp;{{ page_info.description }}
+            </div>
             <div class="content">
-              <a-card >
-                <div>A Side:{{page_info.options[0]}}</div>
+              <a-card>
+                <div>A Side:{{ page_info.options[0] }}</div>
               </a-card>
-              <a-card >
-                <div>B Side:{{page_info.options[1]}}</div>
+              <a-card>
+                <div>B Side:{{ page_info.options[1] }}</div>
               </a-card>
             </div>
             <a-steps
@@ -71,7 +70,10 @@
           </a-card>
         </a-spin>
 
-        <a-spin :spinning="loading.basic_loading" v-if='vote_info.voteState>0'>
+        <a-spin
+          :spinning="loading.basic_loading"
+          v-if="vote_info.voteState > 0"
+        >
           <a-card hoverable class="card">
             <div class="pred-info" style="margin-bottom: 20px">
               <a-statistic
@@ -164,13 +166,23 @@
           </div>
           <div class="center-btn">
             <!-- TODO loading -->
-            <a-button type="primary" class="success" block @click="claim" :loading="loading.claimLoading"
+            <a-button
+              type="primary"
+              class="success"
+              block
+              @click="claim"
+              :loading="loading.claimLoading"
               >Claim {{ canClaimAmount }} {{ token_info.token_name }}</a-button
             >
           </div>
         </a-card>
 
-        <admin-card @refresh="init()" :voteState="vote_info.voteState" :predAdminAddress='vote_info.arbiter'/>
+        <admin-card
+          @refresh="init()"
+          :voteState="vote_info.voteState"
+          :predAdminAddress="vote_info.arbiter"
+          :predAddress="pred_address"
+        />
       </div>
 
       <a-modal
@@ -213,7 +225,12 @@
 
         <a-row :gutter="10">
           <a-col :span="18">
-            <a-slider v-model="voteModal.amount" :min="1" :max="voteMax" :step="1"/>
+            <a-slider
+              v-model="voteModal.amount"
+              :min="1"
+              :max="voteMax"
+              :step="1"
+            />
           </a-col>
           <a-col :span="4">
             <a-input-number
@@ -247,20 +264,19 @@ export default {
     return {
       change_network: false,
       showModal: false,
-      loading:{
-        claimLoading:false,
+      loading: {
+        claimLoading: false,
         basic_loading: true,
-      modal_loading: false,
+        modal_loading: false,
       },
-      pred_address:"",
-      page_info:{
-        deadline:0,
-        description:"",
-        options:['',''],
-        title:""
-        
+      pred_address: "",
+      page_info: {
+        deadline: 0,
+        description: "",
+        options: ["", ""],
+        title: "",
       },
-      
+
       contract: null,
       userShares: 0,
       userSide: null,
@@ -285,7 +301,7 @@ export default {
         percentB: 0,
         shareA: 0,
         shareB: 0,
-        pred_intro_hash:""
+        pred_intro_hash: "",
       },
       token_info: {
         token_name: "",
@@ -311,37 +327,38 @@ export default {
     },
   },
   methods: {
-
     async claim() {
       let self = this;
-      self.loading.claimLoading = true
+      self.loading.claimLoading = true;
       let signer = self.web3.getSigner();
       let contract = self.contract.connect(signer);
       contract.claim().then(
         async (tx) => {
           await tx.wait();
           self.$notification.info({ message: "Claim Success" });
-      self.loading.claimLoading = false
-
+          self.loading.claimLoading = false;
         },
         (error) => {
           self.dealError(error);
-      self.loading.claimLoading = false
-
+          self.loading.claimLoading = false;
         }
       );
     },
     async init() {
       //TODO userSide 变更后没有改变
       let self = this;
-      let pageInfo = self.$route
-      let pred_address = pageInfo.query.pred_address 
-      self.pred_address = pred_address
+      let pageInfo = self.$route;
+      let pred_address = pageInfo.query.pred_address;
+      self.pred_address = pred_address;
+      let signer = self.web3.getSigner();
+      
       let contract = await new self.$ethers.Contract(
         pred_address,
         pred_abi,
         self.web3
       );
+      contract = contract.connect(signer)
+      self.$store.commit('setPredContract',{contract})
       let tokenContract = await new self.$ethers.Contract(
         token_address,
         bank_abi,
@@ -420,8 +437,7 @@ export default {
         },
         (error) => {
           self.loading.modal_loading = false;
-          self.dealError(error)
-          
+          self.dealError(error);
         }
       );
     },
@@ -439,9 +455,9 @@ export default {
     async initBasicInfo() {
       let self = this;
       let predInfo = await self.contract.predictionInfo();
-      let meta =await self.contract.MetaHash()
-      console.log('meta',meta)
-      console.log('pred',predInfo)
+      let meta = await self.contract.MetaHash();
+      console.log("meta", meta);
+      console.log("pred", predInfo);
       let token_name = await self.tokenContract.symbol();
       self.token_info.token_name = token_name;
       let [
@@ -453,7 +469,7 @@ export default {
         arbiter,
         sharePrice,
         fee,
-        pred_intro_hash
+        pred_intro_hash,
       ] = predInfo;
       sideAShares = parseInt(Number(sideAShares));
       sideBShares = parseInt(Number(sideBShares));
@@ -485,11 +501,13 @@ export default {
         let winner = await self.contract.winner();
         self.winner = parseInt(winner) == 1 ? "SideA" : "SideB";
       }
-      console.log(pred_intro_hash)
-      self.$http.get(`https://ipfs.infura.io/ipfs/${pred_intro_hash}`).then(data=>{
-        console.log("page_info",data.data)
-        self.page_info = data.data
-      })
+      console.log(voteState,"voteState");
+      self.$http
+        .get(`https://ipfs.infura.io/ipfs/${pred_intro_hash}`)
+        .then((data) => {
+          console.log("page_info", data.data);
+          self.page_info = data.data;
+        });
     },
   },
   computed: {
@@ -499,8 +517,8 @@ export default {
       if (self.shareInfo.claimed) {
         return 0;
       }
-      if(self.userSide!=self.winner){
-        return 0
+      if (self.userSide != self.winner) {
+        return 0;
       }
       if (self.vote_info.voteState == 3) {
         let sideShare =
@@ -556,15 +574,15 @@ export default {
   .card {
     border-radius: 5px;
     margin-bottom: 20px;
-.card-title{
-  font-size:16px;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-.desc{
-  margin-bottom: 20px;
-  font-size:14px;
-}
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .desc {
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
     .small-desc {
       font-size: 12px;
     }

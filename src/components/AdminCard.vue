@@ -40,7 +40,6 @@ export default {
     return {
       result: 1, //管理员设置的结果
       tokenContract: null,
-      predContract: null,
       loading:{
           open:false,
           stop:false,
@@ -69,7 +68,7 @@ export default {
           }
       }
   },
-  props:["voteState","predAdminAddress"],
+  props:["voteState","predAdminAddress","predAddress"],
   computed:{
       show(){
           let self = this
@@ -80,14 +79,8 @@ export default {
    
     async init() {
       let self = this;
-      let signer = self.web3.getSigner();
 
-      let predContract = await new self.$ethers.Contract(
-        config.pred_address,
-        pred_abi,
-        self.web3
-      );
-      self.predContract = predContract.connect(signer);
+      
     },
     async openVote() {
       let self = this;

@@ -7,7 +7,8 @@ const store = new Vuex.Store({
     web3: null,
     wallet_address: null,
     badChainId:false,
-    allDone:false
+    allDone:false,
+    predContract:null
   },
 
   action: {},
@@ -28,6 +29,9 @@ const store = new Vuex.Store({
     setAllDone(state, payload) {
       // 变更状态
       state.allDone = payload.type;
+    },
+    setPredContract(state,payload){
+      state.predContract = payload.contract
     }
 
   },

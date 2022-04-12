@@ -3,7 +3,7 @@ import { mapState } from "vuex";
 
 export default {
     computed: {
-    ...mapState(["web3", "wallet_address", "badChainId"]),
+    ...mapState(["web3", "wallet_address", "badChainId",'predContract']),
   },
   methods:{
     dealError(error){
