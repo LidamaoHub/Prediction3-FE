@@ -1,6 +1,5 @@
 <template>
   <div class="bank">
-    <nav-header></nav-header>
     <div class="body">
       <div class="container">
         <div class="content">
@@ -43,14 +42,12 @@ import Mixin from "@/mixin/mixin.vue";
 import bankAbi from "@/abi/bank_abi.json";
 import nftAbi from "@/abi/nft_abi.json";
 import { mapState } from "vuex";
-import NavHeader from "@/components/Nav.vue";
 import config from "@/config";
 const token_address = config.token_address;
 const nft_address = "0x221e2ee1b904d2a6ba9dd8ab630c4ac7d704895d";
 export default {
   mixins: [Mixin],
   components: {
-    NavHeader,
   },
   data() {
     return {

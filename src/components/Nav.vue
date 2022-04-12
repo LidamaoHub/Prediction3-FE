@@ -140,6 +140,7 @@ export default {
 // @import '~ant-design-vue/dist/antd.less';
 .nav {
   background-color: white;
+  color: black;
   height: 80px;
   line-height: 80px;
   display: flex;
