@@ -5,12 +5,13 @@
         ><div class="logo-title">History</div></router-link
       >
       <div class="right">
-        <!-- <a-button size="large">Create Predict</a-button> -->
-        <router-link :to="{ name: 'Bank' }"
-          ><a-button size="large">Get Test Coin</a-button></router-link
-        >
+        <!-- <router-link :to="{ name: 'Bank' }">
+          <a-button size="small">Get Test Coin</a-button>
+        </router-link> -->
+         <router-link :to="{ name: 'New' }">
+         Create Prediction
+        </router-link>
         <a-button
-          size="large"
           class="connect-wallet"
           @click="connect_wallet"
           v-if="!address"
@@ -116,9 +117,7 @@ export default {
         wallet_address = await user.getAddress();
         self.$store.commit("setAddress", { address: wallet_address });
       });
-      self.$store.commit("setAllDone", { type:true });
-
-      
+      self.$store.commit("setAllDone", { type: true });
     },
   },
   computed: {
@@ -165,6 +164,7 @@ export default {
       background-color: white;
       border: 1px solid #d9d9d9;
       display: flex;
+      box-sizing: border-box;
       height: 40px;
       padding: 0 15px;
       font-size: 14px;

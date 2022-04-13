@@ -23,6 +23,12 @@ const routes = [
 
   },
   {
+    path: '/new',
+    name: 'New',
+    component: () => import(/* webpackChunkName: "about" */ '../views/New/new.vue')
+
+  },
+  {
     path: '/ipfs',
     name: 'IPFS',
     component: () => import(/* webpackChunkName: "about" */ '../views/Ipfs.vue')

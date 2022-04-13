@@ -55,8 +55,9 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size:18px;
-        border:1px dashed #9CABBB;
+        font-size:16px;
+        border:1px dashed black;
+        border-radius: 5px;
         color:#9CABBB;
         height: 150px;
       }
