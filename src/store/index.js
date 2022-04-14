@@ -8,7 +8,8 @@ const store = new Vuex.Store({
     wallet_address: null,
     badChainId:false,
     allDone:false,
-    predContract:null
+    predContract:null,
+    factoryContract:null
   },
 
   action: {},
@@ -32,6 +33,10 @@ const store = new Vuex.Store({
     },
     setPredContract(state,payload){
       state.predContract = payload.contract
+    },
+    setFactory(state,payload){
+      console.log('initFactory',payload)
+      state.factoryContract = payload.contract
     }
 
   },

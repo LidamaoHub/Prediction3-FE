@@ -9,7 +9,6 @@
       }"
       v-if="step == 1"
     >
-
       <div class="title">Describe Your Prediction</div>
       <div class="input-block">
         <div class="input-title">Title</div>
@@ -46,7 +45,11 @@
       </div>
     </div>
 
-    <div class="form-box" v-if="step == 2" :class="{loading_cover: loading.contract_loading,}">
+    <div
+      class="form-box"
+      v-if="step == 2"
+      :class="{ loading_cover: loading.contract_loading }"
+    >
       <div class="title">Full Fill Your Prediction</div>
       <div class="input-block">
         <div class="input-title">How many tokens per share</div>
@@ -80,28 +83,34 @@
           <button class="btn" @click="load_token">Load Token</button>
         </div>
       </div>
-      <button class="btn" @click="createContract" v-if="contract_info.checked_address">Submit</button>
+      <button
+        class="btn"
+        @click="createContract"
+        v-if="contract_info.checked_address"
+      >
+        Submit
+      </button>
     </div>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
 import { create } from "ipfs-http-client";
-import factory_abi from "@/abi/factory_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
 // TODO 修改bank名称
 import config from "@/config";
+import Mixin from "@/mixin/mixin.vue";
 
-let factory_address = config.chef_address;
 export default {
+  mixins: [Mixin],
+
   data() {
     return {
       step: 2,
-      factoryContract: null,
       ifps: null,
       loading: {
         basic_loading: false,
-        contract_loading:false
+        contract_loading: false,
       },
       basic_info: {
         title: "",
@@ -128,27 +137,14 @@ export default {
     const ipfs = await create("https://ipfs.infura.io:5001");
     self.ipfs = ipfs;
   },
-  
 
   methods: {
-    
     change_token() {
       let self = this;
       self.contract_info.checked_address = false;
       self.contract_info.coin_address = "";
     },
-    async initContract() {
-      let self = this;
-      let signer = self.web3.getSigner();
 
-      let factoryContract = await new self.$ethers.Contract(
-        factory_address,
-        factory_abi,
-        self.web3
-      );
-      factoryContract = factoryContract.connect(signer)
-      self.factoryContract = factoryContract;
-    },
     async uploadJson() {
       let self = this;
       self.loading.basic_loading = true;
@@ -178,13 +174,12 @@ export default {
     },
     async createContract() {
       let self = this;
-      await self.initContract();
-    self.loading.contract_loading = true
+      self.loading.contract_loading = true;
       let ddl = parseInt(Date.now() / 1000) + 60 * 60 * 24 * 60;
 
       let i = self.contract_info;
 
-      let tx = await self.factoryContract.CreatePrediction(
+      let tx =  self.factoryContract.CreatePrediction(
         i.metahash,
         i.share_price,
         i.fee,
@@ -192,13 +187,20 @@ export default {
         i.coin_address,
         // self.basic_info.deadline
         ddl
-      );
-      let result = await tx.wait()
-      console.log(result)
-self.loading.contract_loading = false
-
+      ).then(async(tx)=>{
+          let result =  await tx.wait();
+ console.log(result);
+      self.loading.contract_loading = false;
 
       console.log(result.events[0].args);
+      },(error)=>{
+          
+self.dealError(error)
+      self.loading.contract_loading = false;
+
+      })
+      
+     
     },
     async load_token() {
       let self = this;
@@ -215,9 +217,7 @@ self.loading.contract_loading = false
       self.token_info = { name, symbol };
     },
   },
-  computed: {
-    ...mapState(["web3", "wallet_address"]),
-  },
+  
 };
 </script>
 <style lang="less">

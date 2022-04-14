@@ -243,13 +243,13 @@
 </template>
 <script>
 import config from "@/config";
+import Mixin from "@/mixin/mixin.vue";
 
 import AdminCard from "@/components/AdminCard";
 import pred_abi from "@/abi/pred_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
 const token_address = config.token_address;
 
-import Mixin from "@/mixin/mixin.vue";
 
 export default {
   mixins: [Mixin],
@@ -448,9 +448,6 @@ export default {
     async initBasicInfo() {
       let self = this;
       let predInfo = await self.contract.predictionInfo();
-      let meta = await self.contract.MetaHash();
-      console.log("meta", meta);
-      console.log("pred", predInfo);
       let token_name = await self.tokenContract.symbol();
       self.token_info.token_name = token_name;
       let [
