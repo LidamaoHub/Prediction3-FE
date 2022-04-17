@@ -9,7 +9,10 @@ const store = new Vuex.Store({
     badChainId:false,
     allDone:false,
     predContract:null,
-    factoryContract:null
+    factoryContract:null,
+    showVModal:false,
+    networkInfo:null,
+    balance:0,
   },
 
   action: {},
@@ -35,8 +38,17 @@ const store = new Vuex.Store({
       state.predContract = payload.contract
     },
     setFactory(state,payload){
-      console.log('initFactory',payload)
       state.factoryContract = payload.contract
+    },
+    setShowModal(state,payload){
+      state.showVModal = payload.state
+
+    },
+    setNetworkInfo(state,payload){
+      state.networkInfo = payload.network
+    },
+    updateBalance(state,payload){
+      state.balance = payload.balance
     }
 
   },

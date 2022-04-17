@@ -2,9 +2,9 @@
     <div class="network-shadow" v-if="badChainId">
       <div class="body">
         <div class="title">This feature is not yet supported on this network</div>
-      <div class="content">Please change to the {{chainName}} network</div>
-       <a-button type="primary" @click='change_chain'>
-      Change Network
+      <div class="content">Please select the following networks</div>
+       <a-button type="primary" @click='change_chain(net)' v-for="(net,key) in network_list" :key="key" block style="margin-bottom:20px">
+      {{net.chainName}} Network
     </a-button>
       </div>
       
@@ -13,23 +13,20 @@
 <script>
 import { mapState } from "vuex";
 import config from "@/config"
-let chainName = config.chainName
 export default {
   data(){
     return {
-      chainName:""
     }
   },
   async mounted(){
 let self = this
-self.chainName = chainName
   },
     methods:{
-         async change_chain() {
+         async change_chain(network) {
       let self = this;
         window.ethereum.request({
             method: "wallet_switchEthereumChain",
-            params: [{chainId:config.chainId}],
+            params: [{chainId:network.chainId}],
           })
           .then((res) => {
               window.location.reload();
@@ -38,8 +35,16 @@ self.chainName = chainName
           });
     },
     },
+    watch:{
+      networkInfo(){
+        console.log("change",this.networkInfo)
+      }
+    },
     computed: {
-    ...mapState(["web3", "wallet_address","badChainId"]),
+     network_list(){
+       return Object.values(config.networks)
+     },
+    ...mapState(["web3", "wallet_address","badChainId","networkInfo"]),
   },
 }
 </script>

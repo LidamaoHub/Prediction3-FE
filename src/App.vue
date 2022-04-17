@@ -2,7 +2,7 @@
   <div id="app">
     <nav-header></nav-header>
     <div class="all" :class="{ withShadow: badChainId }">
-      <div class="container">
+      <div class="container" >
         <router-view />
       </div>
     </div>
@@ -13,14 +13,18 @@
 import NavHeader from "@/components/Nav.vue";
 import NetworkShadow from "@/components/Shadow";
 import { mapState } from "vuex";
-import factory_abi from "@/abi/factory_abi.json";
 import config from "@/config";
-let factory_address = config.chef_address;
-
+import mixin from "@/mixin/mixin"
 export default {
+  mixins:[mixin],
   components: {
     NavHeader,
     NetworkShadow,
+  },
+  async created(){
+    let self = this
+    console.log(window.ethereum)
+    await self.connect_wallet();
   },
   computed: {
     ...mapState(["badChainId",'web3']),
@@ -30,13 +34,21 @@ export default {
       let self = this
       let signer = self.web3.getSigner();
 
-      let factoryContract = await new self.$ethers.Contract(
-        factory_address,
-        factory_abi,
-        self.web3
-      );
-      factoryContract = factoryContract.connect(signer)
-      self.$store.commit("setFactory",{contract:factoryContract})
+      
+    }
+  },
+  async mounted(){
+    let self = this
+    if(window.ethereum){
+       window.ethereum.on("chainChanged", (chainId) => {
+         console.log("changeNetwork,chainId:",chainId)
+         self.initChainInfo()
+      });
+      window.ethereum.on("accountsChanged", async (chainId) => {
+        let user = web3.getSigner();
+        let wallet_address = await user.getAddress();
+        self.$store.commit("setAddress", { address: wallet_address });
+      });
     }
   },
   methods:{
@@ -55,12 +67,14 @@ export default {
     &.withShadow {
       filter: blur(7px);
     }
+   
   }
 }
 
 .container {
   width: 565px;
   margin: 0px auto;
+  position: relative;
 }
 
 a {

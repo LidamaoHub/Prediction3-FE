@@ -8,13 +8,8 @@
         <!-- <router-link :to="{ name: 'Bank' }">
           <a-button size="small">Get Test Coin</a-button>
         </router-link> -->
-         <router-link :to="{ name: 'New' }">
-         Create Prediction
-        </router-link>
-        <a-button
-          class="connect-wallet"
-          @click="connect_wallet"
-          v-if="!address"
+        <router-link :to="{ name: 'New' }"> Create Prediction </router-link>
+        <a-button class="connect-wallet" @click="connect_wallet" v-if="!wallet_address"
           >Connect Wallet</a-button
         >
         <div class="wallet btn" v-else>
@@ -22,13 +17,13 @@
           <div class="division"></div>
           <div class="address">
             {{
-              `${address.slice(0, 4)}...${address.slice(address.length - 4)}`
+              `${wallet_address.slice(0, 4)}...${wallet_address.slice(wallet_address.length - 4)}`
             }}
           </div>
           <avatar
             variant="beam"
             :size="25"
-            :name="address"
+            :name="wallet_address"
             class="avatar"
             :colors="color"
           />
@@ -41,84 +36,23 @@
 import { mapState } from "vuex";
 import config from "@/config";
 import Avatar from "vue2-boring-avatars";
-
+import mixin from "../mixin/mixin.vue";
 import { ethers } from "ethers";
 export default {
+  mixins: [mixin],
   components: { Avatar },
   data() {
     return {
       address: null,
       color: ["#56BC8A", "#D85E40", "#F2992E", "#FFFFFF"],
-      balance: 0,
     };
   },
   async mounted() {
     let self = this;
-    self.connect_wallet();
+   
   },
   methods: {
-    async change_chain() {
-      let self = this;
-      if (self.chainId != config.chainId) {
-        window.ethereum
-          .request({
-            method: "wallet_switchEthereumChain",
-            params: [{ chainId: config.chainId }],
-          })
-          .then((res) => {
-            window.location.reload();
-          })
-          .catch((error) => {});
-      }
-    },
-    async update_balance() {
-      let self = this;
-      let balance = await self.web3.getBalance(self.wallet_address);
-      self.balance = Number(ethers.utils.formatEther(balance)).toFixed(2);
-    },
-    async connect_wallet() {
-      let self = this;
-      let web3Provider;
-      // mount 时在全局写入 web3
-      if (window.ethereum) {
-        web3Provider = window.ethereum;
-        try {
-          // 请求用户授权
-          await window.ethereum.enable();
-        } catch (error) {}
-      } else if (window.web3) {
-        web3Provider = window.web3.currentProvider;
-      }
-
-      web3 = new ethers.providers.Web3Provider(web3Provider);
-      let user = web3.getSigner();
-      self.$store.commit("setWeb3", { web3 });
-
-      let wallet_address = await user.getAddress();
-      let networkInfo = await web3.getNetwork();
-
-      let chainId = networkInfo.chainId;
-      self.chainId = chainId;
-      self.$store.commit("setNetwork", {
-        badChainId: chainId != config.chainId,
-      });
-      if (wallet_address) {
-        self.$store.commit("setAddress", { address: wallet_address });
-        self.address = wallet_address;
-        self.update_balance();
-
-        await self.change_chain();
-      }
-
-      window.ethereum.on("chainChanged", (chainId) => {
-        self.change_chain();
-      });
-      window.ethereum.on("accountsChanged", async (chainId) => {
-        wallet_address = await user.getAddress();
-        self.$store.commit("setAddress", { address: wallet_address });
-      });
-      self.$store.commit("setAllDone", { type: true });
-    },
+    
   },
   computed: {
     user_address() {
@@ -131,7 +65,6 @@ export default {
         )}...${self.wallet_address.substring(l - 5, l)}`;
       }
     },
-    ...mapState(["web3", "wallet_address"]),
   },
 };
 </script>

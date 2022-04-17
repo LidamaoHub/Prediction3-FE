@@ -62,7 +62,10 @@
       <div class="input-block">
         <div class="input-title">
           Fee
-          <div class="sub">1 for 1% Only integers can be entered</div>
+          <div class="sub">
+            1 for 1% After the settlement, a portion of the tokens will be
+            awarded to the creator
+          </div>
         </div>
         <input type="number" placeholder="e.g. 5" v-model="contract_info.fee" />
       </div>
@@ -70,16 +73,18 @@
         <div class="input-title">Coin Info</div>
         <div class="group">
           <div class="coin-info-block">
-            {{ token_info.name }} {{ token_info.symbol }}
+            Token Name : {{ token_info.name }} Token Symbol : {{ token_info.symbol }}
           </div>
 
           <button class="btn" @click="change_token">Change Token</button>
         </div>
       </div>
       <div class="input-block" v-else>
-        <div class="input-title">Coin Address</div>
+        <div class="input-title">Coin Address<div class="sub">
+           should be the address of token
+          </div></div>
         <div class="group">
-          <input type="text" v-model="contract_info.coinAddress" />
+          <input type="text" v-model="contract_info.coin_address" />
           <button class="btn" @click="load_token">Load Token</button>
         </div>
       </div>
@@ -119,11 +124,11 @@ export default {
         deadline: 0,
       },
       contract_info: {
-        metahash: "QmRqbgJphM14h26gRZWBwn7SAZ15mujcPBDVNXkqLbknxY",
+        metahash: "asd",
         share_price: null,
         fee: null,
         coin_address: "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
-        checked_address: true,
+        checked_address: false,
       },
       token_info: {
         name: "",
@@ -179,32 +184,36 @@ export default {
 
       let i = self.contract_info;
 
-      let tx =  self.factoryContract.CreatePrediction(
-        i.metahash,
-        i.share_price,
-        i.fee,
-        1,
-        i.coin_address,
-        // self.basic_info.deadline
-        ddl
-      ).then(async(tx)=>{
-          let result =  await tx.wait();
- console.log(result);
-      self.loading.contract_loading = false;
+      let tx = self.factoryContract
+        .CreatePrediction(
+          i.metahash,
+          i.share_price,
+          i.fee,
+          1,
+          i.coin_address,
+          // self.basic_info.deadline
+          ddl
+        )
+        .then(
+          async (tx) => {
+            let result = await tx.wait();
+            console.log(result);
+            self.loading.contract_loading = false;
+            let pred_address= result.events[0].args[2]
+            alert("Create Prediction Success,the page will redirect to prediction detail page")
+            self.$router.push({name:"Detail",query:{pred_address}})
 
-      console.log(result.events[0].args);
-      },(error)=>{
-          
-self.dealError(error)
-      self.loading.contract_loading = false;
-
-      })
-      
-     
+            console.log(result.events[0].args);
+          },
+          (error) => {
+            self.dealError(error);
+            self.loading.contract_loading = false;
+          }
+        );
     },
     async load_token() {
       let self = this;
-      let token_address = self.contract_info.coinAddress;
+      let token_address = self.contract_info.coin_address;
       let tokenContract = await new self.$ethers.Contract(
         token_address,
         bank_abi,
@@ -217,7 +226,6 @@ self.dealError(error)
       self.token_info = { name, symbol };
     },
   },
-  
 };
 </script>
 <style lang="less">
@@ -282,7 +290,7 @@ self.dealError(error)
       .coin-info-block {
         border: 2px solid black;
         height: 35px;
-        line-height: 35px;
+        line-height: 31px;
         width: 100%;
         padding: 0px 10px;
         box-sizing: border-box;
@@ -297,6 +305,7 @@ self.dealError(error)
           font-size: 12px;
           color: #0f1f37;
           margin-left: 10px;
+          font-weight: 100;
         }
       }
       .group {
@@ -304,6 +313,7 @@ self.dealError(error)
         align-items: center;
         .btn {
           height: 35px;
+          line-height:35px;
         }
       }
       .btn {
@@ -318,7 +328,7 @@ self.dealError(error)
         outline: unset;
         border: 2px solid black;
         height: 35px;
-        line-height: 35px;
+        line-height: 31px;
         padding: 0px 10px;
         width: 100%;
       }

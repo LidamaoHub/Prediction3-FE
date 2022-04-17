@@ -15,9 +15,10 @@
           </div>
           </router-link>
         </div>
-        <div class="line-empty" v-if="lines.length == 0">
+        <div class="line-empty" v-if="empty">
           <span>Empty</span> &nbsp;<span>😅</span>
         </div>
+        <div v-if="loading">Loading...</div>
       </div>
     </div>
   </div>
@@ -32,6 +33,8 @@ export default {
   data() {
     return {
       lines: [],
+      empty:false,
+      loading:true
     };
   },
   async mounted() {
@@ -62,29 +65,32 @@ export default {
       let self = this;
       let maxId = await self.factoryContract.PredictId();
       maxId = parseInt(maxId);
-      console.log("maxId", maxId);
-      let list = [];
 
       if (maxId > 0) {
         maxId -= 1;
         let minId = maxId > 10 ? maxId - 10 : maxId;
         for (let i = maxId; i > -1; i--) {
-          console.log(123);
-          let addr = await self.factoryContract.PredictionList(i);
-          console.log(addr);
+          try{
+            let addr = await self.factoryContract.PredictionList(i);
           let predInfo = await self.getPredictionInfo(addr);
           let url = `https://ipfs.infura.io/ipfs/${predInfo.pred_intro_hash}`;
-          console.log(url);
 
           let info = await self.$http.get(url);
           if (info.status == 200) {
             predInfo = { ...predInfo, ...info.data };
-            list.push(predInfo);
+            self.lines.push(predInfo);
+            self.empty = false
           }
+          }catch{
+
+          }
+          
         }
-        self.lines = list;
+        if(self.lines.length==0){
+          self.empty = true
+        }
+        self.loading = false
       }
-      console.log(list);
     },
   },
 };

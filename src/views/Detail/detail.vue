@@ -1,5 +1,5 @@
 <template>
-  <div class="detail-page">
+  <div class="detail-page" :class="{ withShadow: showVModal }">
         <a-spin :spinning="loading.basic_loading">
           <a-card hoverable class="card">
             <div class="card-title">Topic:&nbsp;{{ page_info.title }}</div>
@@ -238,13 +238,15 @@
           </a-col>
         </a-row>
       </a-modal>
-
+<v-modal/>
   </div>
 </template>
 <script>
+
 import config from "@/config";
 import Mixin from "@/mixin/mixin.vue";
 
+import VModal from '@/components/Modal'
 import AdminCard from "@/components/AdminCard";
 import pred_abi from "@/abi/pred_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
@@ -253,7 +255,7 @@ const token_address = config.token_address;
 
 export default {
   mixins: [Mixin],
-  components: {  AdminCard },
+  components: {  AdminCard,VModal },
   data() {
     return {
       change_network: false,
@@ -306,18 +308,17 @@ export default {
   async mounted() {
     let self = this;
     if (self.web3) {
-      self.init();
+      self.init('mounted');
     }
   },
   watch: {
-    async web3() {
-      let self = this;
-      self.init();
-    },
+    // async web3() {
+    //   let self = this;
+    //   self.init();
+    // },
     async wallet_address() {
       let self = this;
-      self.getUserShare();
-      self.init();
+      self.init('watch');
     },
   },
   methods: {
@@ -338,27 +339,23 @@ export default {
         }
       );
     },
-    async init() {
+    async init(f) {
+      console.log('init',f)
       //TODO userSide 变更后没有改变
       let self = this;
       let pageInfo = self.$route;
       let pred_address = pageInfo.query.pred_address;
       self.pred_address = pred_address;
-      let signer = self.web3.getSigner();
-      
-      let contract = await new self.$ethers.Contract(
-        pred_address,
-        pred_abi,
-        self.web3
-      );
-      contract = contract.connect(signer)
-      self.$store.commit('setPredContract',{contract})
+      let predInfo = await self.getPredictionInfo(pred_address)
+     console.log("predInfo",predInfo)
+      self.$store.commit('setPredContract',{contract:predInfo.contract})
+
       let tokenContract = await new self.$ethers.Contract(
-        token_address,
+        predInfo.CoinAddress,
         bank_abi,
         self.web3
       );
-      self.contract = contract;
+      self.contract = predInfo.contract;
       self.tokenContract = tokenContract;
       await self.initBasicInfo();
       self.loading.basic_loading = false;
@@ -537,7 +534,9 @@ export default {
 }
 .detail-page {
   
-
+&.withShadow {
+      filter: blur(7px);
+    }
   .ant-btn-primary {
     &.first {
       background-color: #f2992e;
