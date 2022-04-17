@@ -23,7 +23,6 @@ export default {
   },
   async created(){
     let self = this
-    console.log(window.ethereum)
     await self.connect_wallet();
   },
   computed: {
@@ -47,6 +46,7 @@ export default {
       window.ethereum.on("accountsChanged", async (chainId) => {
         let user = web3.getSigner();
         let wallet_address = await user.getAddress();
+        console.log("changeWallet:",wallet_address)
         self.$store.commit("setAddress", { address: wallet_address });
         self.update_balance()
       });

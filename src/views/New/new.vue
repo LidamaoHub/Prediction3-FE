@@ -163,15 +163,12 @@ export default {
         predInfo.deadline
       ) {
         let result = await self.ipfs.add(JSON.stringify(predInfo));
-        console.log(result);
         let url = `https://ipfs.infura.io/ipfs/${result.path}`;
-        console.log(url);
         self.contract_info.metahash = result.path;
         let info = await self.$http.get(url);
         self.step = 2;
         self.loading.basic_loading = false;
 
-        console.log(info);
       } else {
         alert("bad info");
         self.loading.basic_loading = false;
@@ -197,13 +194,11 @@ export default {
         .then(
           async (tx) => {
             let result = await tx.wait();
-            console.log(result);
             self.loading.contract_loading = false;
             let pred_address= result.events[0].args[2]
             alert("Create Prediction Success,the page will redirect to prediction detail page")
             self.$router.push({name:"Detail",query:{pred_address}})
 
-            console.log(result.events[0].args);
           },
           (error) => {
             self.dealError(error);

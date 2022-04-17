@@ -308,7 +308,7 @@ export default {
   async mounted() {
     let self = this;
     if (self.web3) {
-      self.init('mounted');
+      self.init();
     }
   },
   watch: {
@@ -318,7 +318,7 @@ export default {
     // },
     async wallet_address() {
       let self = this;
-      self.init('watch');
+      self.init();
     },
   },
   methods: {
@@ -339,15 +339,13 @@ export default {
         }
       );
     },
-    async init(f) {
-      console.log('init',f)
+    async init() {
       //TODO userSide 变更后没有改变
       let self = this;
       let pageInfo = self.$route;
       let pred_address = pageInfo.query.pred_address;
       self.pred_address = pred_address;
       let predInfo = await self.getPredictionInfo(pred_address)
-     console.log("predInfo",predInfo)
       self.$store.commit('setPredContract',{contract:predInfo.contract})
 
       let tokenContract = await new self.$ethers.Contract(

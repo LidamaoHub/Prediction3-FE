@@ -78,16 +78,12 @@ export default {
     },
     handleChange(e, fileList) {
       let self = this;
-      console.log("change", e);
-      console.log("file", e.file);
       this.fileList = [e.file];
-      console.log("fileList", this.fileList);
 
       return false;
     },
     bef(a, b, c) {
       this.fileList = [a];
-      console.log("before", a, b, c);
       return false;
     },
     handleExceed(files, fileList) {
@@ -102,7 +98,6 @@ export default {
         this.$message.warning("请选择需要上传的文件");
       } else {
         const reader = new window.FileReader();
-        console.log(this.fileList[0]);
         reader.readAsArrayBuffer(this.fileList[0]);
         reader.onloadend = () => {
           this.buffer = Buffer(reader.result);
@@ -120,17 +115,13 @@ export default {
         deadline: ddl,
       };
       let result = await self.ipfs.add(JSON.stringify(predInfo));
-      console.log(result);
       let url = `https://ipfs.infura.io/ipfs/${result.path}`;
-      console.log(url);
 
       let info = await axios.get(url);
-      console.log(info);
     },
     async uploadToIPFS() {
       //   let result = await this.ipfs.add(this.buffer);
       let result = await this.ipfs.add(JSON.stringify({ ldm: "handsome" }));
-      console.log(result);
       this.src = `https://ipfs.infura.io/ipfs/${result.path}`;
       this.ipfsHash = `${result.path}`;
     },

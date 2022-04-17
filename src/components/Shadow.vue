@@ -37,7 +37,6 @@ let self = this
     },
     watch:{
       networkInfo(){
-        console.log("change",this.networkInfo)
       }
     },
     computed: {
