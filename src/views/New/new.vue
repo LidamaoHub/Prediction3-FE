@@ -111,7 +111,7 @@ export default {
 
   data() {
     return {
-      step: 2,
+      step: 1,
       ifps: null,
       loading: {
         basic_loading: false,
@@ -124,10 +124,10 @@ export default {
         deadline: 0,
       },
       contract_info: {
-        metahash: "asd",
+        metahash: "",
         share_price: null,
         fee: null,
-        coin_address: "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+        coin_address: "",
         checked_address: false,
       },
       token_info: {

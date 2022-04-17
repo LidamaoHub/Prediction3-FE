@@ -107,9 +107,9 @@ export default {
           background-color: #19202e;
           color: white;
         }
-        padding: 0px 10px;
-        height: 25px;
-        line-height: 25px;
+        padding: 0px 15px;
+        height: 35px;
+        line-height: 35px;
       }
     }
     .list-items {

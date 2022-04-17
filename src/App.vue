@@ -48,6 +48,7 @@ export default {
         let user = web3.getSigner();
         let wallet_address = await user.getAddress();
         self.$store.commit("setAddress", { address: wallet_address });
+        self.update_balance()
       });
     }
   },
