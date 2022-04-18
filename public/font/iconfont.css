@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3323769 */
-  src: url('iconfont.woff2?t=1649772453541') format('woff2'),
-       url('iconfont.woff?t=1649772453541') format('woff'),
-       url('iconfont.ttf?t=1649772453541') format('truetype');
+  src: url('iconfont.woff2?t=1650306139808') format('woff2'),
+       url('iconfont.woff?t=1650306139808') format('woff'),
+       url('iconfont.ttf?t=1650306139808') format('truetype');
 }
 
 .iconfont {
@@ -13,7 +13,55 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-like:before {
+  content: "\e761";
+}
+
+.icon-close:before {
+  content: "\e723";
+}
+
 .icon-star-fill:before {
-  content: "\e86a";
+  content: "\e732";
+}
+
+.icon-star:before {
+  content: "\e733";
+}
+
+.icon-talk-fill:before {
+  content: "\e743";
+}
+
+.icon-talk:before {
+  content: "\e744";
+}
+
+.icon-setting:before {
+  content: "\e74c";
+}
+
+.icon-clock-fill:before {
+  content: "\e74e";
+}
+
+.icon-clock:before {
+  content: "\e74f";
+}
+
+.icon-search:before {
+  content: "\e752";
+}
+
+.icon-like-fill:before {
+  content: "\e760";
+}
+
+.icon-down-fill:before {
+  content: "\e771";
+}
+
+.icon-down-arrow:before {
+  content: "\e772";
 }
 
