@@ -110,8 +110,9 @@ export default {
     },
     async initChainInfo() {
       let self = this;
-      console.log("initChainInfo")
-      let networkInfo = await web3.getNetwork();
+      console.log("initChainInfo",self.web3)
+      let networkInfo = await self.web3.getNetwork();
+      console.log('info',networkInfo)
       let chainId = networkInfo.chainId;
       let network = config.networks[chainId];
       if (network) {

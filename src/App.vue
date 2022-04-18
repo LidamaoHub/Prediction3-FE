@@ -41,7 +41,7 @@ export default {
     if(window.ethereum){
        window.ethereum.on("chainChanged", (chainId) => {
          console.log("changeNetwork,chainId:",chainId)
-         self.initChainInfo()
+         self.connect_wallet()
       });
       window.ethereum.on("accountsChanged", async (chainId) => {
         let user = web3.getSigner();

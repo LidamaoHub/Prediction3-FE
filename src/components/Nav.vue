@@ -33,7 +33,7 @@
           </div>
           <div class="chain-line">
             <div class="line">{{ networkInfo.chainName }} <div class="dot"></div></div>
-            <div class="line" v-for="(net, key) in chain_list" :key="key">
+            <div class="line" v-for="(net, key) in chain_list" :key="key" @click="change_chain(net)">
               {{ net.chainName }}
             </div>
           </div>
@@ -60,7 +60,24 @@ export default {
   async mounted() {
     let self = this;
   },
-  methods: {},
+  methods: {
+    async change_chain(network) {
+      let self = this
+      window.ethereum
+        .request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: network.chainId }],
+        })
+        .then((res) => {
+          console.log('red',res)
+          self.$router.push({name:"Home"})
+          console.log('asd',self.$router)
+
+        })
+        .catch((error) => {
+        });
+    },
+  },
   computed: {
     user_address() {
       let self = this;
@@ -114,7 +131,6 @@ export default {
       box-sizing: border-box;
       border-radius: 4px;
       position: relative;
-      width:203px;
       &:hover .wallet-line {
         border-bottom-color: transparent;
         border-bottom-right-radius: unset;
@@ -155,7 +171,7 @@ export default {
         }
       }
       .chain-line {
-      width:203px;
+      width:100%;
 
         position: absolute;
         box-sizing: border-box;
