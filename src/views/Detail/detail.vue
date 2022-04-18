@@ -486,11 +486,9 @@ export default {
         let winner = await self.contract.winner();
         self.winner = parseInt(winner) == 1 ? "SideA" : "SideB";
       }
-      console.log(voteState,"voteState");
       self.$http
         .get(`https://ipfs.infura.io/ipfs/${pred_intro_hash}`)
         .then((data) => {
-          console.log("page_info", data.data);
           self.page_info = data.data;
         });
     },

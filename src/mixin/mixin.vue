@@ -90,7 +90,6 @@ export default {
         self.update_balance();
       }
       //init factory
-      console.log("address",network.factory_address)
       let factoryContract = await new self.$ethers.Contract(
         network.factory_address,
         factory_abi,
@@ -110,9 +109,7 @@ export default {
     },
     async initChainInfo() {
       let self = this;
-      console.log("initChainInfo",self.web3)
       let networkInfo = await self.web3.getNetwork();
-      console.log('info',networkInfo)
       let chainId = networkInfo.chainId;
       let network = config.networks[chainId];
       if (network) {

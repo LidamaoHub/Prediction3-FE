@@ -69,9 +69,7 @@ export default {
           params: [{ chainId: network.chainId }],
         })
         .then((res) => {
-          console.log('red',res)
           self.$router.push({name:"Home"})
-          console.log('asd',self.$router)
 
         })
         .catch((error) => {
