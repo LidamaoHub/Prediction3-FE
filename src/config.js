@@ -11,7 +11,8 @@ const conf = {
       token:"ETH",
       chainId: "0x4",
       chainName:"Rinkeby",
-      token_address: "0x788C4103b063d330D4Bde56b52C54E0e58dc6c86",
+      token_address: "0xc606ab99967780655609115Aa9aB6A98a43bd3B9",
+      factory_address:"0xE37686F739Fb8CB1fFaA1CBA12E2aF4ff75BeA6a",
     },
     // "137":{
     //   token:"Matic",
