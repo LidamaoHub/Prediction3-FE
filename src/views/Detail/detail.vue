@@ -250,7 +250,6 @@ import VModal from '@/components/Modal'
 import AdminCard from "@/components/AdminCard";
 import pred_abi from "@/abi/pred_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
-const token_address = config.token_address;
 
 
 export default {

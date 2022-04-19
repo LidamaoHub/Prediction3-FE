@@ -34,18 +34,24 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "uint256",
+        "name": "predId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
-        "name": "previousOwner",
+        "name": "predAddress",
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
+        "indexed": false,
+        "internalType": "bool",
+        "name": "showType",
+        "type": "bool"
       }
     ],
-    "name": "OwnershipTransferred",
+    "name": "SwitchShowType",
     "type": "event"
   },
   {
@@ -110,6 +116,43 @@
     "name": "PredictionList",
     "outputs": [
       {
+        "internalType": "bool",
+        "name": "show",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "addr",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_predictId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getPredict",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "manager",
+    "outputs": [
+      {
         "internalType": "address",
         "name": "",
         "type": "address"
@@ -132,21 +175,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_predictId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_type",
+        "type": "bool"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
+    "name": "setShowType",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -155,11 +196,11 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "newOwner",
+        "name": "tokenAddress",
         "type": "address"
       }
     ],
-    "name": "transferOwnership",
+    "name": "withdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

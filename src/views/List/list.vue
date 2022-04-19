@@ -71,7 +71,7 @@ export default {
         let minId = maxId > 10 ? maxId - 10 : maxId;
         for (let i = maxId; i > -1; i--) {
           try{
-            let addr = await self.factoryContract.PredictionList(i);
+            let addr = await self.factoryContract.getPredict(i);
           let predInfo = await self.getPredictionInfo(addr);
           let url = `https://ipfs.infura.io/ipfs/${predInfo.pred_intro_hash}`;
 
@@ -89,8 +89,11 @@ export default {
         if(self.lines.length==0){
           self.empty = true
         }
-        self.loading = false
+        
+      }else{
+        self.empty = true
       }
+      self.loading = false
     },
   },
 };

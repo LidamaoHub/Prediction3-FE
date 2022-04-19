@@ -29,9 +29,9 @@ const routes = [
 
   },
   {
-    path: '/ipfs',
-    name: 'IPFS',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Ipfs.vue')
+    path: '/manage',
+    name: 'Manage',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Manage/manage.vue')
 
   }
  

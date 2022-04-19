@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address payable",
-        "name": "_creator",
+        "name": "_adminAddress",
         "type": "address"
       },
       {
@@ -464,6 +464,19 @@
     "name": "voteETH",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "voteState",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
