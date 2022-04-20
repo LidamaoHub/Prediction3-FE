@@ -67,12 +67,19 @@ export default {
       let self = this;
       let web3Provider;
       // mount 时在全局写入 web3
+      console.log('connect_wallet')
       if (window.ethereum) {
+        console.log('e')
         web3Provider = window.ethereum;
         try {
           // 请求用户授权
-          await window.ethereum.eth_requestAccounts();
-        } catch (error) {}
+          let addr=await ethereum.request({ method: 'eth_requestAccounts' });//授权连接钱包
+        console.log('user wallet address:',addr);
+          // await window.ethereum.request({ method: 'eth_requestAccounts' }) 
+          // await window.ethereum.eth_requestAccounts();
+        } catch (error) {
+          console.log('err',error)
+        }
       } else if (window.web3) {
         web3Provider = window.web3.currentProvider;
       }

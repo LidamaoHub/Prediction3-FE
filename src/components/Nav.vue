@@ -6,6 +6,7 @@
       >
       <div class="right">
         <router-link :to="{ name: 'New' }"> Create Prediction </router-link>
+        
         <a-button
           class="connect-wallet"
           @click="connect_wallet"
@@ -43,11 +44,9 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
 import config from "@/config";
 import Avatar from "vue2-boring-avatars";
 import mixin from "../mixin/mixin.vue";
-import { ethers } from "ethers";
 export default {
   mixins: [mixin],
   components: { Avatar },
@@ -61,6 +60,10 @@ export default {
     let self = this;
   },
   methods: {
+    async connect(){
+      let self = this
+      await window.ethereum.request({ method: 'eth_requestAccounts' }) 
+    },
     async change_chain(network) {
       let self = this
       window.ethereum

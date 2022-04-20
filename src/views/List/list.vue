@@ -44,9 +44,12 @@ export default {
     }
   },
   watch: {
-    async factoryContract() {
+    async factoryContract(a,b) {
       let self = this;
+      if(b==null){
       await self.getList();
+
+      }
     },
   },
   methods: {
