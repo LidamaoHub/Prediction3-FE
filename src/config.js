@@ -5,7 +5,7 @@ const conf = {
       chainId: "0x7a69",
       chainName:"Hardhat",
       token_address: "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
-      factory_address:"0xf4B146FbA71F41E0592668ffbF264F1D186b2Ca8",
+      factory_address:"0xC9a43158891282A2B1475592D5719c001986Aaec",
     },
     "4":{
       token:"ETH",

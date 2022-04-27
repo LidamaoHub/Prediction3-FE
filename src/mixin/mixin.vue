@@ -30,13 +30,13 @@ export default {
     async getPredictionInfo(address) {
       let self = this;
       let signer = web3.getSigner();
-  
+
       let contract = await new self.$ethers.Contract(
         address,
         pred_abi,
         self.web3
       );
-      contract = contract.connect(signer)
+      contract = contract.connect(signer);
       let predInfo = await contract.predictionInfo();
       let [
         publishState,
@@ -47,38 +47,38 @@ export default {
         arbiter,
         sharePrice,
         fee,
-        pred_intro_hash,
+        predIntroHash,
       ] = predInfo;
+      console.log('num',sharePrice.toString())
       return {
         publishState,
         voteState,
-        sideAShares: parseInt(sideAShares),
-        sideBShares: parseInt(sideBShares),
+        sideAShares: sideAShares.toNumber(),
+        sideBShares: sideBShares.toNumber(),
         CoinAddress,
         arbiter,
-        sharePrice: parseInt(sharePrice),
-        fee: parseInt(fee),
-        pred_intro_hash,
-        pred_address: address,
-        contract
+        sharePrice: sharePrice.toNumber(),
+        fee: fee.toNumber(),
+        predIntroHash,
+        predAddress: address,
+        contract,
       };
     },
     async connect_wallet() {
       let self = this;
       let web3Provider;
       // mount 时在全局写入 web3
-      console.log('connect_wallet')
       if (window.ethereum) {
-        console.log('e')
         web3Provider = window.ethereum;
         try {
           // 请求用户授权
-          let addr=await ethereum.request({ method: 'eth_requestAccounts' });//授权连接钱包
-        console.log('user wallet address:',addr);
-          // await window.ethereum.request({ method: 'eth_requestAccounts' }) 
-          // await window.ethereum.eth_requestAccounts();
+          let addr = await ethereum.request({ method: "eth_requestAccounts" }); //授权连接钱包
+          console.log("user wallet address:", addr);
+          // await window.ethereum.request({ method: 'eth_requestAccounts' })
         } catch (error) {
-          console.log('err',error)
+          self.$notification.error({
+          message: error.message,
+      });
         }
       } else if (window.web3) {
         web3Provider = window.web3.currentProvider;
@@ -91,10 +91,12 @@ export default {
 
       let network = await self.initChainInfo(); //根据chainId初始化各个链上基础conf
 
-
       if (wallet_address) {
         self.$store.commit("setAddress", { address: wallet_address });
         self.update_balance();
+      }
+      if(!network){
+        return 
       }
       //init factory
       let factoryContract = await new self.$ethers.Contract(
@@ -106,7 +108,7 @@ export default {
       self.$store.commit("setFactory", { contract: factoryContract });
 
       self.$store.commit("setAllDone", { type: true });
-      console.log("alldone")
+      console.log("alldone");
     },
     async update_balance() {
       let self = this;
@@ -126,7 +128,7 @@ export default {
           badChainId: true,
         });
       }
-      return network
+      return network;
     },
   },
 };

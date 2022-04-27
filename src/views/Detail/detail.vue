@@ -82,6 +82,7 @@
 
               <a-statistic title="Max Shares" :value="200" />
             </div>
+            {{vote_info}}
             <div class="progress-block" style="margin-bottom: 20px">
               <div class="left">
                 <div class="text">
@@ -179,7 +180,7 @@
           @refresh="init()"
           :voteState="vote_info.voteState"
           :predAdminAddress="vote_info.arbiter"
-          :predAddress="pred_address"
+          :predAddress="predAddress"
         />
 
       <a-modal
@@ -264,7 +265,7 @@ export default {
         basic_loading: true,
         modal_loading: false,
       },
-      pred_address: "",
+      predAddress: "",
       page_info: {
         deadline: 0,
         description: "",
@@ -296,7 +297,7 @@ export default {
         percentB: 0,
         shareA: 0,
         shareB: 0,
-        pred_intro_hash: "",
+        predIntroHash: "",
       },
       token_info: {
         token_name: "",
@@ -342,9 +343,11 @@ export default {
       //TODO userSide 变更后没有改变
       let self = this;
       let pageInfo = self.$route;
-      let pred_address = pageInfo.query.pred_address;
-      self.pred_address = pred_address;
-      let predInfo = await self.getPredictionInfo(pred_address)
+      let predAddress = pageInfo.query.predAddress;
+      self.predAddress = predAddress;
+      let predInfo = await self.getPredictionInfo(predAddress)
+      console.log("predInfo",predInfo)
+       self.vote_info  = predInfo
       self.$store.commit('setPredContract',{contract:predInfo.contract})
 
       let tokenContract = await new self.$ethers.Contract(
@@ -359,7 +362,17 @@ export default {
       await self.getAllowance();
       await self.getUserShare();
       let claimed = await self.contract.claimedList(self.wallet_address);
+      
       self.shareInfo.claimed = claimed;
+      if (predInfo.voteState == 3) {
+        let winner = await self.contract.winner();
+        self.winner = parseInt(winner) == 1 ? "SideA" : "SideB";
+      }
+      self.$http
+        .get(`https://ipfs.infura.io/ipfs/${predIntroHash}`)
+        .then((data) => {
+          self.page_info = data.data;
+        });
     },
     fromWei(num) {
       return this.$ethers.utils.formatEther(num);
@@ -371,7 +384,7 @@ export default {
       let signer = self.web3.getSigner();
       let tokenContract = self.tokenContract.connect(signer);
       tokenContract
-        .approve(self.pred_address, self.$ethers.utils.parseEther("200000000"))
+        .approve(self.predAddress, self.$ethers.utils.parseEther("200000000"))
         .then(
           async (result) => {
             await result.wait();
@@ -390,7 +403,7 @@ export default {
 
       let allowance = await self.tokenContract.allowance(
         self.wallet_address,
-        self.pred_address
+        self.predAddress
       );
       self.allowance = parseInt(Number(allowance));
     },
@@ -441,55 +454,8 @@ export default {
     },
     async initBasicInfo() {
       let self = this;
-      let predInfo = await self.contract.predictionInfo();
-      let token_name = await self.tokenContract.symbol();
-      self.token_info.token_name = token_name;
-      let [
-        publishState,
-        voteState,
-        sideAShares,
-        sideBShares,
-        CoinAddress,
-        arbiter,
-        sharePrice,
-        fee,
-        pred_intro_hash,
-      ] = predInfo;
-      sideAShares = parseInt(Number(sideAShares));
-      sideBShares = parseInt(Number(sideBShares));
-
-      sharePrice = parseInt(self.$ethers.utils.formatEther(sharePrice));
-      let allShares = sideAShares + sideBShares;
-      let percentA, percentB;
-      if (allShares == 0) {
-        percentA = percentB = 0;
-      } else {
-        percentA = parseFloat(((sideAShares / allShares) * 100).toFixed(2));
-        percentB = parseFloat(((sideBShares / allShares) * 100).toFixed(2));
-      }
-
-      self.vote_info = {
-        publishState,
-        allShares,
-        sharePrice,
-        arbiter,
-        voteState,
-        percentA,
-        percentB,
-        fee,
-        pred_intro_hash,
-        shareA: sideAShares,
-        shareB: sideBShares,
-      };
-      if (voteState == 3) {
-        let winner = await self.contract.winner();
-        self.winner = parseInt(winner) == 1 ? "SideA" : "SideB";
-      }
-      self.$http
-        .get(`https://ipfs.infura.io/ipfs/${pred_intro_hash}`)
-        .then((data) => {
-          self.page_info = data.data;
-        });
+      
+      
     },
   },
   computed: {

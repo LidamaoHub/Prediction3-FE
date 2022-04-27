@@ -195,9 +195,9 @@ export default {
           async (tx) => {
             let result = await tx.wait();
             self.loading.contract_loading = false;
-            let pred_address= result.events[0].args[2]
+            let predAddress= result.events[0].args[2]
             alert("Create Prediction Success,the page will redirect to prediction detail page")
-            self.$router.push({name:"Detail",query:{pred_address}})
+            self.$router.push({name:"Detail",query:{predAddress}})
 
           },
           (error) => {

@@ -6,7 +6,7 @@
       </div>
       <div class="list-items">
         <div class="line" v-for="(line, key) in lines" :key="`pred-${key}`">
-          <router-link :to="{name:'Detail',query:{pred_address:line.pred_address}}">
+          <router-link :to="{name:'Detail',query:{predAddress:line.predAddress}}">
           <div class="line-title">{{ line.title }}</div>
           <div class="line-body">
             <div class="popular sub"><div>{{get_popular_pred(line)}}</div></div>
@@ -76,7 +76,7 @@ export default {
           try{
             let addr = await self.factoryContract.getPredict(i);
           let predInfo = await self.getPredictionInfo(addr);
-          let url = `https://ipfs.infura.io/ipfs/${predInfo.pred_intro_hash}`;
+          let url = `https://ipfs.infura.io/ipfs/${predInfo.predIntroHash}`;
 
           let info = await self.$http.get(url);
           if (info.status == 200) {

@@ -10,7 +10,7 @@
         <a-button
           class="connect-wallet"
           @click="connect_wallet"
-          v-if="!wallet_address"
+          v-if="!(networkInfo&&wallet_address)"
           >Connect Wallet</a-button
         >
         <div class="wallet btn" v-else>
