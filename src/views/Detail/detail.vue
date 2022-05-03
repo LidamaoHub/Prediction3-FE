@@ -82,7 +82,6 @@
 
               <a-statistic title="Max Shares" :value="200" />
             </div>
-            {{vote_info}}
             <div class="progress-block" style="margin-bottom: 20px">
               <div class="left">
                 <div class="text">
@@ -181,6 +180,7 @@
           :voteState="vote_info.voteState"
           :predAdminAddress="vote_info.arbiter"
           :predAddress="predAddress"
+          :page_info="page_info"
         />
 
       <a-modal
@@ -347,7 +347,28 @@ export default {
       self.predAddress = predAddress;
       let predInfo = await self.getPredictionInfo(predAddress)
       console.log("predInfo",predInfo)
-       self.vote_info  = predInfo
+      let allShares = predInfo.sideAShares + predInfo.sideBShares;
+      let percentA, percentB;
+      if (allShares == 0) {
+        percentA = percentB = 0;
+      } else {
+        percentA = parseFloat(((predInfo.sideAShares / allShares) * 100).toFixed(2));
+        percentB = parseFloat(((predInfo.sideBShares / allShares) * 100).toFixed(2));
+      }
+      self.vote_info = {
+        fee: predInfo.fee,
+        publishState: predInfo.publishState,
+        allShares: allShares,
+        sharePrice: predInfo.sharePrice,
+        arbiter: predInfo.arbiter,
+        voteState: predInfo.voteState,
+        percentA,
+        percentB,
+        shareA: predInfo.sideAShares,
+        shareB: predInfo.sideBShares,
+        predIntroHash: predInfo.predIntroHash,
+      }
+       
       self.$store.commit('setPredContract',{contract:predInfo.contract})
 
       let tokenContract = await new self.$ethers.Contract(
@@ -355,9 +376,10 @@ export default {
         bank_abi,
         self.web3
       );
+      let token_name = await tokenContract.symbol();
+       self.token_info.token_name = token_name
       self.contract = predInfo.contract;
       self.tokenContract = tokenContract;
-      await self.initBasicInfo();
       self.loading.basic_loading = false;
       await self.getAllowance();
       await self.getUserShare();
@@ -369,7 +391,7 @@ export default {
         self.winner = parseInt(winner) == 1 ? "SideA" : "SideB";
       }
       self.$http
-        .get(`https://ipfs.infura.io/ipfs/${predIntroHash}`)
+        .get(`https://ipfs.infura.io/ipfs/${predInfo.predIntroHash}`)
         .then((data) => {
           self.page_info = data.data;
         });
@@ -424,16 +446,16 @@ export default {
       let self = this;
       self.loading.modal_loading = true;
       let signer = self.web3.getSigner();
-      let tokenContract = self.tokenContract.connect(signer);
       let contract = self.contract.connect(signer);
-      contract.voteERC20(self.voteModal.side, self.voteModal.amount).then(
+      let amount = self.voteModal.amount*self.vote_info.sharePrice
+      console.log(amount)
+      contract.voteERC20(self.voteModal.side, amount).then(
         async (tx) => {
           await tx.wait();
           self.closeModal();
 
           self.loading.modal_loading = false;
-          self.initBasicInfo();
-          self.getUserShare();
+          self.init();
         },
         (error) => {
           self.loading.modal_loading = false;
@@ -452,11 +474,7 @@ export default {
         self.voteMax = 200 - self.userShares;
       }
     },
-    async initBasicInfo() {
-      let self = this;
-      
-      
-    },
+   
   },
   computed: {
     canClaimAmount() {

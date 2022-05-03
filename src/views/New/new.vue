@@ -73,17 +73,38 @@
         <div class="input-title">Coin Info</div>
         <div class="group">
           <div class="coin-info-block">
-            Token Name : {{ token_info.name }} Token Symbol : {{ token_info.symbol }}
+            Token Symbol :{{ token_info.symbol }}
           </div>
 
           <button class="btn" @click="change_token">Change Token</button>
         </div>
       </div>
       <div class="input-block" v-else>
-        <div class="input-title">Coin Address<div class="sub">
-           should be the address of token
-          </div></div>
-        <div class="group">
+        <div class="input-title">
+          Coin Address
+          <div class="sub">should be the address of token</div>
+        </div>
+        <div class="group" v-if="token_list">
+          <div class="select-group">
+            <select
+              name=""
+              id=""
+              v-model="selectTokenName"
+              placeholder="Please select the token"
+              @change="select_token"
+            >
+              <option
+                :value="tokenName"
+                v-for="(tokenAddress, tokenName) in token_list"
+                :key="tokenName"
+              >
+                {{ tokenName }}:{{ tokenAddress }}
+              </option>
+              <option value="Other" key="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="group" v-if="selectTokenName == 'Other'">
           <input type="text" v-model="contract_info.coin_address" />
           <button class="btn" @click="load_token">Load Token</button>
         </div>
@@ -99,11 +120,9 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
 import { create } from "ipfs-http-client";
 import bank_abi from "@/abi/bank_abi.json";
 // TODO 修改bank名称
-import config from "@/config";
 import Mixin from "@/mixin/mixin.vue";
 
 export default {
@@ -113,6 +132,7 @@ export default {
     return {
       step: 1,
       ifps: null,
+      selectTokenName: null,
       loading: {
         basic_loading: false,
         contract_loading: false,
@@ -136,6 +156,11 @@ export default {
       },
     };
   },
+  computed: {
+    token_list() {
+      return this.networkInfo ? this.networkInfo.token_list : [];
+    },
+  },
 
   async mounted() {
     let self = this;
@@ -144,10 +169,23 @@ export default {
   },
 
   methods: {
+    select_token() {
+      let self = this;
+
+      let token_name = self.selectTokenName;
+      console.log(token_name);
+      if (token_name == "Other") {
+        return;
+      }
+      let token_addr = self.token_list[token_name];
+      self.token_info = { symbol: token_name, address: token_addr };
+      self.contract_info.checked_address = true;
+    },
     change_token() {
       let self = this;
+      self.token_info = { symbol: "", address: "" };
+      self.selectTokenName = null;
       self.contract_info.checked_address = false;
-      self.contract_info.coin_address = "";
     },
 
     async uploadJson() {
@@ -168,7 +206,6 @@ export default {
         let info = await self.$http.get(url);
         self.step = 2;
         self.loading.basic_loading = false;
-
       } else {
         alert("bad info");
         self.loading.basic_loading = false;
@@ -180,25 +217,36 @@ export default {
       let ddl = parseInt(Date.now() / 1000) + 60 * 60 * 24 * 60;
 
       let i = self.contract_info;
-
-      let tx = self.factoryContract
+      let coin_address = self.token_info.address;
+      let share_price = self.$ethers.utils.parseEther(i.share_price+"")
+      console.log("coin_address", coin_address);
+      let info = {
+          hash:i.metahash,
+          share_price,
+          fee:i.fee,
+          coinType:1,
+          coin_address,
+          ddl
+      }
+      console.log("contractInfo",info)
+self.factoryContract
         .CreatePrediction(
           i.metahash,
-          i.share_price,
+          share_price,
           i.fee,
           1,
-          i.coin_address,
-          // self.basic_info.deadline
+          coin_address,
           ddl
         )
         .then(
           async (tx) => {
             let result = await tx.wait();
             self.loading.contract_loading = false;
-            let predAddress= result.events[0].args[2]
-            alert("Create Prediction Success,the page will redirect to prediction detail page")
-            self.$router.push({name:"Detail",query:{predAddress}})
-
+            let predAddress = result.events[0].args[2];
+            alert(
+              "Create Prediction Success,the page will redirect to prediction detail page"
+            );
+            self.$router.push({ name: "Detail", query: { predAddress } });
           },
           (error) => {
             self.dealError(error);
@@ -208,13 +256,20 @@ export default {
     },
     async load_token() {
       let self = this;
-      let token_address = self.contract_info.coin_address;
-      let tokenContract = await new self.$ethers.Contract(
-        token_address,
-        bank_abi,
-        self.web3
-      );
-
+      let tokenContract;
+      try {
+        let token_address = self.contract_info.coin_address;
+        token_address = self.$ethers.utils.getAddress(token_address)
+        tokenContract = await new self.$ethers.Contract(
+          token_address,
+          bank_abi,
+          self.web3
+        );
+      } catch (err) {
+          self.$notification.error({message:err.message});
+        console.dir(err);
+        return;
+      }
       let name = await tokenContract.name();
       let symbol = await tokenContract.symbol();
       self.contract_info.checked_address = true;
@@ -239,7 +294,7 @@ export default {
 .loading_cover {
   position: relative;
   &:before {
-    animation: loading 0.3s ease-out;
+    animation: loading 0.2s ease-out;
     animation-fill-mode: forwards;
     content: "Loading...";
     // color:black;
@@ -308,7 +363,28 @@ export default {
         align-items: center;
         .btn {
           height: 35px;
-          line-height:35px;
+          line-height: 35px;
+        }
+        .select-group {
+          width: 100%;
+          border: 2px solid black;
+
+          padding: 0px 10px;
+          margin-bottom: 20px;
+        }
+        select {
+          width: 100%;
+          border: unset;
+          outline: unset;
+          height: 35px;
+          line-height: 35px;
+          //   -webkit-appearance: none;
+          //   -moz-appearance: none;
+          //   appearance: none;
+          position: relative;
+          option {
+            padding: 0px 10px;
+          }
         }
       }
       .btn {

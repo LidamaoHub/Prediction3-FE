@@ -3,10 +3,10 @@
     <a-card class="card">
       <div class="content" v-if='voteState==2'>
         <a-card @click="result = 1" :class="{ selected: result == 1 }">
-          <div>A选项:至少还一点</div>
+          <div>ASide:{{page_info.options[0]}}</div>
         </a-card>
         <a-card @click="result = 2" :class="{ selected: result == 2 }">
-          <div>B选项:根本不会还钱</div>
+          <div>BSide:{{page_info.options[1]}}</div>
         </a-card>
       </div>
 
@@ -68,7 +68,7 @@ export default {
           }
       }
   },
-  props:["voteState","predAdminAddress","predAddress"],
+  props:["voteState","predAdminAddress","predAddress","page_info"],
   computed:{
       show(){
           let self = this

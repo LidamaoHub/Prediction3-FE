@@ -50,6 +50,7 @@ export default {
         predIntroHash,
       ] = predInfo;
       console.log('num',sharePrice.toString())
+      let share_price = self.$ethers.utils.formatEther(sharePrice)
       return {
         publishState,
         voteState,
@@ -57,7 +58,7 @@ export default {
         sideBShares: sideBShares.toNumber(),
         CoinAddress,
         arbiter,
-        sharePrice: sharePrice.toNumber(),
+        sharePrice: share_price,
         fee: fee.toNumber(),
         predIntroHash,
         predAddress: address,

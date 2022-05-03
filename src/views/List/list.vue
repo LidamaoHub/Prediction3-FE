@@ -6,13 +6,17 @@
       </div>
       <div class="list-items">
         <div class="line" v-for="(line, key) in lines" :key="`pred-${key}`">
-          <router-link :to="{name:'Detail',query:{predAddress:line.predAddress}}">
-          <div class="line-title">{{ line.title }}</div>
-          <div class="line-body">
-            <div class="popular sub"><div>{{get_popular_pred(line)}}</div></div>
-            <div class="remaining sub">{{line.deadline}}</div>
-            <div class="liquidity sub">1000,000 LDM</div>
-          </div>
+          <router-link
+            :to="{ name: 'Detail', query: { predAddress: line.predAddress } }"
+          >
+            <div class="line-title">{{ line.title }}</div>
+            <div class="line-body">
+              <div class="popular sub">
+                <div>{{ get_popular_pred(line) }}</div>
+              </div>
+              <div class="remaining sub">{{ line.deadline }}</div>
+              <div class="liquidity sub">1000,000 LDM</div>
+            </div>
           </router-link>
         </div>
         <div class="line-empty" v-if="empty">
@@ -33,8 +37,8 @@ export default {
   data() {
     return {
       lines: [],
-      empty:false,
-      loading:true
+      empty: false,
+      loading: true,
     };
   },
   async mounted() {
@@ -44,25 +48,24 @@ export default {
     }
   },
   watch: {
-    async factoryContract(a,b) {
+    async factoryContract(a, b) {
       let self = this;
-      if(b==null){
-      await self.getList();
-
+      if (b == null) {
+        await self.getList();
       }
     },
   },
   methods: {
     get_popular_pred(info) {
-      if(info.sideAShares==info.sideBShares==0){
-        return "New Prediction"
+      if ((info.sideAShares == info.sideBShares) == 0) {
+        return "New Prediction";
       }
-      if(info.sideAShares==info.sideBShares){
-        return "Both Side"
+      if (info.sideAShares == info.sideBShares) {
+        return "Both Side";
       }
-      
-      let index = info.sideAShares>info.sideBShares?0:1
-      return info.options[index]
+
+      let index = info.sideAShares > info.sideBShares ? 0 : 1;
+      return info.options[index];
     },
     async getList() {
       let self = this;
@@ -71,32 +74,29 @@ export default {
 
       if (maxId > 0) {
         maxId -= 1;
+        // TODO,minId
         let minId = maxId > 10 ? maxId - 10 : maxId;
         for (let i = maxId; i > -1; i--) {
-          try{
+          try {
             let addr = await self.factoryContract.getPredict(i);
-          let predInfo = await self.getPredictionInfo(addr);
-          let url = `https://ipfs.infura.io/ipfs/${predInfo.predIntroHash}`;
+            let predInfo = await self.getPredictionInfo(addr);
+            let url = `https://ipfs.infura.io/ipfs/${predInfo.predIntroHash}`;
 
-          let info = await self.$http.get(url);
-          if (info.status == 200) {
-            predInfo = { ...predInfo, ...info.data };
-            self.lines.push(predInfo);
-            self.empty = false
-          }
-          }catch{
-
-          }
-          
+            let info = await self.$http.get(url);
+            if (info.status == 200) {
+              predInfo = { ...predInfo, ...info.data };
+              self.lines.push(predInfo);
+              self.empty = false;
+            }
+          } catch {}
         }
-        if(self.lines.length==0){
-          self.empty = true
+        if (self.lines.length == 0) {
+          self.empty = true;
         }
-        
-      }else{
-        self.empty = true
+      } else {
+        self.empty = true;
       }
-      self.loading = false
+      self.loading = false;
     },
   },
 };
