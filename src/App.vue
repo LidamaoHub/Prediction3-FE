@@ -6,20 +6,22 @@
         <router-view />
       </div>
     </div>
+    <page-footer></page-footer>
     <network-shadow />
   </div>
 </template>
 <script>
 import NavHeader from "@/components/Nav.vue";
 import NetworkShadow from "@/components/Shadow";
+import PageFooter from "@/components/Footer";
 import { mapState } from "vuex";
-import config from "@/config";
 import mixin from "@/mixin/mixin"
 export default {
   mixins:[mixin],
   components: {
     NavHeader,
     NetworkShadow,
+    PageFooter
   },
   async created(){
     let self = this

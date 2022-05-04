@@ -75,7 +75,6 @@ export default {
           // 请求用户授权
           let addr = await ethereum.request({ method: "eth_requestAccounts" }); //授权连接钱包
           console.log("user wallet address:", addr);
-          // await window.ethereum.request({ method: 'eth_requestAccounts' })
         } catch (error) {
           self.$notification.error({
           message: error.message,
