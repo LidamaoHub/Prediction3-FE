@@ -18,13 +18,15 @@ const conf = {
       },
       factory_address:"0xE37686F739Fb8CB1fFaA1CBA12E2aF4ff75BeA6a",
     },
-    // "137":{
-    //   token:"Matic",
-    //   chainId: "0x89",
-    //   chainName:"Matic",
-    //   token_address: "0x788C4103b063d330D4Bde56b52C54E0e58dc6c86",
-    //   factory_address:"0x711499654d424E1443A08BFCd8777fA349FF6932",
-    // },
+    "137":{
+      token:"Matic",
+      chainId: "0x89",
+      chainName:"Polygon",
+      token_list:{
+        "LDM":"0x15e11E29AdE9909f9B24e5aE950f5c4880a5Cc4F"
+      },
+      factory_address:"0xddC192921Affaf7d552b75Fd5D8f2E5a1b015eAD",
+    },
     // "70" : {
     //   token:"ETH",
     //   chainId: "0x46",
