@@ -9,15 +9,23 @@ const conf = {
       },
       factory_address: "0xC9a43158891282A2B1475592D5719c001986Aaec",
     },
-    4: {
+    3:{
       token: "ETH",
-      chainId: "0x4",
-      chainName: "Rinkeby",
-      token_list: {
-        LDM: "0xc606ab99967780655609115Aa9aB6A98a43bd3B9",
-      },
-      factory_address: "0xE37686F739Fb8CB1fFaA1CBA12E2aF4ff75BeA6a",
+        chainId: "0x3",
+        chainName: "Ropsten",
+        token_list: {
+        },
+        factory_address: "0x61233cc075b94f4808D05BFf1b3984764b2086ba",
     },
+    // 4: {
+    //   token: "ETH",
+    //   chainId: "0x4",
+    //   chainName: "Rinkeby",
+    //   token_list: {
+    //     LDM: "0xc606ab99967780655609115Aa9aB6A98a43bd3B9",
+    //   },
+    //   factory_address: "0xE37686F739Fb8CB1fFaA1CBA12E2aF4ff75BeA6a",
+    // },
     137: {
       token: "Matic",
       chainId: "0x89",
@@ -38,6 +46,7 @@ const conf = {
       },
       factory_address: "0x7edEcbd201c8AE2440D280f68E306c985b58FEDB",
     },
+
   },
 };
 
