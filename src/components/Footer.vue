@@ -1,5 +1,5 @@
 <template>
-  <div class="footer">Prediction3 version:0.1</div>
+  <div class="footer">Prediction3.com version:0.1</div>
 </template>
 <style lang="less">
 .footer {
