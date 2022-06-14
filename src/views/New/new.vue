@@ -130,7 +130,7 @@ export default {
 
   data() {
     return {
-      step: 1,
+      step: 2,
       ifps: null,
       selectTokenName: null,
       loading: {
@@ -153,6 +153,7 @@ export default {
       token_info: {
         name: "",
         symbol: "",
+        address:""
       },
     };
   },
@@ -218,6 +219,7 @@ export default {
 
       let i = self.contract_info;
       let coin_address = self.token_info.address;
+      console.log("coin_address",coin_address)
       let share_price = self.$ethers.utils.parseEther(i.share_price + "");
       console.log("coin_address", coin_address);
       let info = {
@@ -265,8 +267,10 @@ export default {
       }
       let name = await tokenContract.name();
       let symbol = await tokenContract.symbol();
+      let address = self.contract_info.coin_address
+      console.log(self.token_info.address)
       self.contract_info.checked_address = true;
-      self.token_info = { name, symbol };
+      self.token_info = { name, symbol ,address};
     },
   },
 };
