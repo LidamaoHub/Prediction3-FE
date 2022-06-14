@@ -218,26 +218,19 @@ export default {
 
       let i = self.contract_info;
       let coin_address = self.token_info.address;
-      let share_price = self.$ethers.utils.parseEther(i.share_price+"")
+      let share_price = self.$ethers.utils.parseEther(i.share_price + "");
       console.log("coin_address", coin_address);
       let info = {
-          hash:i.metahash,
-          share_price,
-          fee:i.fee,
-          coinType:1,
-          coin_address,
-          ddl
-      }
-      console.log("contractInfo",info)
-self.factoryContract
-        .CreatePrediction(
-          i.metahash,
-          share_price,
-          i.fee,
-          1,
-          coin_address,
-          ddl
-        )
+        hash: i.metahash,
+        share_price,
+        fee: i.fee,
+        coinType: 1,
+        coin_address,
+        ddl,
+      };
+      console.log("contractInfo", info);
+      self.factoryContract
+        .CreatePrediction(i.metahash, share_price, i.fee, 1, coin_address, ddl)
         .then(
           async (tx) => {
             let result = await tx.wait();
@@ -259,14 +252,14 @@ self.factoryContract
       let tokenContract;
       try {
         let token_address = self.contract_info.coin_address;
-        token_address = self.$ethers.utils.getAddress(token_address)
+        token_address = self.$ethers.utils.getAddress(token_address);
         tokenContract = await new self.$ethers.Contract(
           token_address,
           bank_abi,
           self.web3
         );
       } catch (err) {
-          self.$notification.error({message:err.message});
+        self.$notification.error({ message: err.message });
         console.dir(err);
         return;
       }

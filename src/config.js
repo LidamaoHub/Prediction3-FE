@@ -14,6 +14,7 @@ const conf = {
         chainId: "0x3",
         chainName: "Ropsten",
         token_list: {
+          PTT:"0xEC7268940B48Bf4849487987B0e9C9d4c1E7Cfa3"
         },
         factory_address: "0x61233cc075b94f4808D05BFf1b3984764b2086ba",
     },
