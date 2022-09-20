@@ -8,30 +8,30 @@ const routes = [
   {
     path: '/detail',
     name: 'Detail',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Detail/detail.vue')
+    component: () => import('../views/Detail/detail.vue')
 
   },
   {
     path: '/',
     name: 'Home',
-    component: () => import(/* webpackChunkName: "about" */ '../views/List/list.vue')
+    component: () => import('../views/Index.vue')
   },
   {
     path: '/bank',
     name: 'Bank',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Bank.vue')
+    component: () => import('../views/Bank.vue')
 
   },
   {
     path: '/new',
     name: 'New',
-    component: () => import(/* webpackChunkName: "about" */ '../views/New/new.vue')
+    component: () => import('../views/New/new.vue')
 
   },
   {
     path: '/manage',
     name: 'Manage',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Manage/manage.vue')
+    component: () => import('../views/Manage/manage.vue')
 
   }
  

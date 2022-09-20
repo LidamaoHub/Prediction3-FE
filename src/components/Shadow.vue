@@ -1,18 +1,18 @@
 <template>
   <div class="network-shadow" v-if="badChainId">
     <div class="body">
+      <img src="@/assets/images/img_network.png" alt="" class="network-img">
       <div class="title">This feature is not yet supported on this network</div>
       <div class="content">Please select the following networks</div>
-      <a-button
-        type="primary"
-        @click="change_chain(net)"
-        v-for="(net, key) in network_list"
-        :key="key"
-        block
-        style="margin-bottom: 20px"
-      >
-        {{ net.chainName }} Network
-      </a-button>
+      <div class="network-list">
+        <div class="network-item" 
+          @click="change_chain(net)"
+          v-for="(net, key) in network_list"
+          :key="key"
+        >
+          {{ net.chainName }} Network
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -24,7 +24,6 @@ export default {
     return {};
   },
   async mounted() {
-    let self = this;
   },
   methods: {
     async change_chain(network) {
@@ -50,30 +49,59 @@ export default {
   },
 };
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .network-shadow {
   position: fixed;
-  top: 0px;
+  top: 80px;
   bottom: 0px;
   left: 0px;
   right: 0px;
   z-index: 10;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   .body {
     text-align: center;
-    background: white;
-    padding: 20px;
-    box-shadow: 0px 0px 10px 10px white;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(22px);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    .network-img {
+      width: 80px;
+      height: auto;
+    }
     .title {
-      font-weight: bold;
-      font-size: 25px;
-      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 20px;
+      line-height: 24px;
+      color: #1E2022;
+      margin-top: 32px;
     }
     .content {
-      font-size: 20px;
-      margin-bottom: 20px;
+      margin-top: 15px;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      color: #8796A3;
+    }
+    .network-list {
+      margin-top: 32px;
+      .network-item {
+        width: 560px;
+        height: 44px;
+        background: #1E2022;
+        border-radius: 2px;
+        margin-bottom: 24px;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 17px;
+        color: #FFFFFF;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
     }
   }
 }

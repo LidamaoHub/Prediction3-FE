@@ -1,144 +1,54 @@
 <template>
   <div class="detail-page" :class="{ withShadow: showVModal }">
-        <a-spin :spinning="loading.basic_loading">
-          <a-card hoverable class="card">
-            <div class="card-title">Topic:&nbsp;{{ page_info.title }}</div>
-            <div class="description">
-              Description:&nbsp;{{ page_info.description }}
-            </div>
-            <div class="content">
-              <a-card>
-                <div>A Side:{{ page_info.options[0] }}</div>
-              </a-card>
-              <a-card>
-                <div>B Side:{{ page_info.options[1] }}</div>
-              </a-card>
-            </div>
-            <a-steps
-              :current="vote_info.voteState"
-              size="small"
-              class="detail-step"
-            >
-              <a-step title="Step1">
-                <span slot="description" class="small-desc">Pending</span>
-              </a-step>
-
-              <a-step title="Step2">
-                <span slot="description" class="small-desc">Voting</span>
-              </a-step>
-              <a-step title="Step3">
-                <span slot="description" class="small-desc"
-                  >In Arbitration</span
-                >
-              </a-step>
-
-              <a-step title="End" />
-            </a-steps>
-            <div class="pred-info-vertical">
-              <div class="pred-intro">
-                Votes
-                <div class="desc">{{ vote_info.allShares }}</div>
-              </div>
-              <div class="pred-intro">
-                Liquidity
-                <div class="desc">
-                  {{ vote_info.allShares * vote_info.sharePrice }}
-                  {{ token_info.token_name }}
-                </div>
-              </div>
-              <div class="pred-intro">
-                Arbiter
-                <div class="desc">{{ vote_info.arbiter }}</div>
-              </div>
-              <template v-if="userShares">
-                <div class="pred-intro">
-                  Your Side
-                  <div class="desc">{{ userSide }}</div>
-                </div>
-                <div class="pred-intro">
-                  Your Shares
-                  <div class="desc">{{ userShares }}</div>
-                </div>
-                <div class="pred-intro" v-if="winner">
-                  Winner
-                  <div class="desc">{{ winner }}</div>
-                </div>
-              </template>
-            </div>
+    <a-spin :spinning="loading.basic_loading">
+      <a-card hoverable class="card">
+        <div class="card-title">Topic:&nbsp;{{ page_info.title }}</div>
+        <div class="description">
+          Description:&nbsp;{{ page_info.description }}
+        </div>
+        <div class="content">
+          <a-card>
+            <div>A Side:{{ page_info.options[0] }}</div>
           </a-card>
-        </a-spin>
-
-        <a-spin
-          :spinning="loading.basic_loading"
-          v-if="vote_info.voteState > 0"
-        >
-          <a-card hoverable class="card">
-            <div class="pred-info" style="margin-bottom: 20px">
-              <a-statistic
-                title="Token"
-                :value="token_info.token_name"
-              ></a-statistic>
-              <a-statistic title="Amount/Share" :value="vote_info.sharePrice" />
-
-              <a-statistic title="Max Shares" :value="200" />
-            </div>
-            <div class="progress-block" style="margin-bottom: 20px">
-              <div class="left">
-                <div class="text">
-                  Yes
-                  <div class="right-text">
-                    {{ vote_info.percentA }}%
-                    <template v-if="vote_info.shareA">
-                      - {{ vote_info.shareA }}
-                      {{ token_info.token_name }}</template
-                    >
-                  </div>
-                </div>
-                <a-progress
-                  :percent="vote_info.percentA"
-                  :showInfo="false"
-                  strokeColor="#F2992E"
-                />
-              </div>
-              <div class="right">
-                <!-- <div class="win"><a-icon type="trophy" />WIN</div> -->
-                <a-button type="primary" class="first" @click="openModal('1')"
-                  >Support A</a-button
-                >
-              </div>
-            </div>
-            <div class="progress-block">
-              <div class="left">
-                <div class="text">
-                  No
-                  <div class="right-text">
-                    {{ vote_info.percentB }}%
-                    <template v-if="vote_info.shareB">
-                      - {{ vote_info.shareB }}
-                      {{ token_info.token_name }}</template
-                    >
-                  </div>
-                </div>
-                <a-progress
-                  :percent="vote_info.percentB"
-                  :showInfo="false"
-                  strokeColor="#539ECC"
-                />
-              </div>
-              <div class="right">
-                <a-button type="primary" class="second" @click="openModal('2')">
-                  Support B
-                </a-button>
-              </div>
-            </div>
+          <a-card>
+            <div>B Side:{{ page_info.options[1] }}</div>
           </a-card>
-        </a-spin>
-
-        <a-card
-          class="card"
-          v-if="vote_info.voteState == 3 && canClaimAmount > 0"
+        </div>
+        <a-steps
+          :current="vote_info.voteState"
+          size="small"
+          class="detail-step"
         >
-          <div class="pred-info-vertical" style="margin-bottom: 20px">
+          <a-step title="Step1">
+            <span slot="description" class="small-desc">Pending</span>
+          </a-step>
+
+          <a-step title="Step2">
+            <span slot="description" class="small-desc">Voting</span>
+          </a-step>
+          <a-step title="Step3">
+            <span slot="description" class="small-desc">In Arbitration</span>
+          </a-step>
+
+          <a-step title="End" />
+        </a-steps>
+        <div class="pred-info-vertical">
+          <div class="pred-intro">
+            Votes
+            <div class="desc">{{ vote_info.allShares }}</div>
+          </div>
+          <div class="pred-intro">
+            Liquidity
+            <div class="desc">
+              {{ vote_info.allShares * vote_info.sharePrice }}
+              {{ token_info.token_name }}
+            </div>
+          </div>
+          <div class="pred-intro">
+            Arbiter
+            <div class="desc">{{ vote_info.arbiter }}</div>
+          </div>
+          <template v-if="userShares">
             <div class="pred-intro">
               Your Side
               <div class="desc">{{ userSide }}</div>
@@ -147,115 +57,189 @@
               Your Shares
               <div class="desc">{{ userShares }}</div>
             </div>
-            <div class="pred-intro">
-              All Shares
-              <div class="desc">{{ vote_info.allShares }}</div>
+            <div class="pred-intro" v-if="winner">
+              Winner
+              <div class="desc">{{ winner }}</div>
             </div>
-            <div class="pred-intro">
-              Fee
-              <div class="desc">{{ vote_info.fee }}%</div>
-            </div>
-            <div class="pred-intro">
-              You Can Claim
-              <div class="desc">
-                {{ canClaimAmount }} {{ token_info.token_name }}
+          </template>
+        </div>
+      </a-card>
+    </a-spin>
+
+    <a-spin :spinning="loading.basic_loading" v-if="vote_info.voteState > 0">
+      <a-card hoverable class="card">
+        <div class="pred-info" style="margin-bottom: 20px">
+          <a-statistic
+            title="Token"
+            :value="token_info.token_name"
+          ></a-statistic>
+          <a-statistic title="Amount/Share" :value="vote_info.sharePrice" />
+
+          <a-statistic title="Max Shares" :value="200" />
+        </div>
+        <div class="progress-block" style="margin-bottom: 20px">
+          <div class="left">
+            <div class="text">
+              Yes
+              <div class="right-text">
+                {{ vote_info.percentA }}%
+                <template v-if="vote_info.shareA">
+                  - {{ vote_info.shareA }} {{ token_info.token_name }}</template
+                >
               </div>
             </div>
+            <a-progress
+              :percent="vote_info.percentA"
+              :showInfo="false"
+              strokeColor="#F2992E"
+            />
           </div>
-          <div class="center-btn">
-            <!-- TODO loading -->
-            <a-button
-              type="primary"
-              class="success"
-              block
-              @click="claim"
-              :loading="loading.claimLoading"
-              >Claim {{ canClaimAmount }} {{ token_info.token_name }}</a-button
+          <div class="right">
+            <!-- <div class="win"><a-icon type="trophy" />WIN</div> -->
+            <a-button type="primary" class="first" @click="openModal('1')"
+              >Support A</a-button
             >
           </div>
-        </a-card>
+        </div>
+        <div class="progress-block">
+          <div class="left">
+            <div class="text">
+              No
+              <div class="right-text">
+                {{ vote_info.percentB }}%
+                <template v-if="vote_info.shareB">
+                  - {{ vote_info.shareB }} {{ token_info.token_name }}</template
+                >
+              </div>
+            </div>
+            <a-progress
+              :percent="vote_info.percentB"
+              :showInfo="false"
+              strokeColor="#539ECC"
+            />
+          </div>
+          <div class="right">
+            <a-button type="primary" class="second" @click="openModal('2')">
+              Support B
+            </a-button>
+          </div>
+        </div>
+      </a-card>
+    </a-spin>
 
-        <admin-card
-          @refresh="init()"
-          :voteState="vote_info.voteState"
-          :predAdminAddress="vote_info.arbiter"
-          :predAddress="predAddress"
-          :page_info="page_info"
-        />
-
-      <a-modal
-        v-model="showModal"
-        title="Vote The Predict"
-        class="voteModal"
-        @cancel="closeModal"
-      >
-        <template slot="footer">
-          <a-button
-            key="submit"
-            type="primary"
-            :loading="loading.modal_loading"
-            @click="vote"
-            v-if="allowance > 0"
-          >
-            Submit Your Predict
-          </a-button>
-          <a-button
-            key="submit"
-            type="primary"
-            :loading="loading.modal_loading"
-            @click="approve"
-            v-else
-          >
-            Approve Your {{ token_info.token_name }}
-          </a-button>
-        </template>
-        <div class="modal-title">Select your side</div>
-
-        <a-radio-group
-          v-model="voteModal.side"
-          button-style="solid"
-          style="margin-bottom: 10px"
+    <a-card class="card" v-if="vote_info.voteState == 3 && canClaimAmount > 0">
+      <div class="pred-info-vertical" style="margin-bottom: 20px">
+        <div class="pred-intro">
+          Your Side
+          <div class="desc">{{ userSide }}</div>
+        </div>
+        <div class="pred-intro">
+          Your Shares
+          <div class="desc">{{ userShares }}</div>
+        </div>
+        <div class="pred-intro">
+          All Shares
+          <div class="desc">{{ vote_info.allShares }}</div>
+        </div>
+        <div class="pred-intro">
+          Fee
+          <div class="desc">{{ vote_info.fee }}%</div>
+        </div>
+        <div class="pred-intro">
+          You Can Claim
+          <div class="desc">
+            {{ canClaimAmount }} {{ token_info.token_name }}
+          </div>
+        </div>
+      </div>
+      <div class="center-btn">
+        <!-- TODO loading -->
+        <a-button
+          type="primary"
+          class="success"
+          block
+          @click="claim"
+          :loading="loading.claimLoading"
+          >Claim {{ canClaimAmount }} {{ token_info.token_name }}</a-button
         >
-          <a-radio-button value="1"> SideA </a-radio-button>
-          <a-radio-button value="2"> SideB </a-radio-button>
-        </a-radio-group>
-        <div class="modal-title">Select your shares</div>
+      </div>
+    </a-card>
 
-        <a-row :gutter="10">
-          <a-col :span="18">
-            <a-slider
-              v-model="voteModal.amount"
-              :min="1"
-              :max="voteMax"
-              :step="1"
-            />
-          </a-col>
-          <a-col :span="4">
-            <a-input-number
-              v-model="voteModal.amount"
-              :min="1"
-              :max="voteMax"
-            />
-          </a-col>
-        </a-row>
-      </a-modal>
-<v-modal/>
+    <admin-card
+      @refresh="init()"
+      :voteState="vote_info.voteState"
+      :predAdminAddress="vote_info.arbiter"
+      :predAddress="predAddress"
+      :page_info="page_info"
+    />
+
+    <a-modal
+      v-model="showModal"
+      title="Vote The Predict"
+      class="voteModal"
+      @cancel="closeModal"
+    >
+      <template slot="footer">
+        <a-button
+          key="submit"
+          type="primary"
+          :loading="loading.modal_loading"
+          @click="vote"
+          v-if="allowance > 0"
+        >
+          Submit Your Predict
+        </a-button>
+        <a-button
+          key="submit"
+          type="primary"
+          :loading="loading.modal_loading"
+          @click="approve"
+          v-else
+        >
+          Approve Your {{ token_info.token_name }}
+        </a-button>
+      </template>
+      <div class="modal-title">Select your side</div>
+
+      <a-radio-group
+        v-model="voteModal.side"
+        button-style="solid"
+        style="margin-bottom: 10px"
+      >
+        <a-radio-button value="1"> SideA </a-radio-button>
+        <a-radio-button value="2"> SideB </a-radio-button>
+      </a-radio-group>
+      <div class="modal-title">Select your shares</div>
+
+      <a-row :gutter="10">
+        <a-col :span="18">
+          <a-slider
+            v-model="voteModal.amount"
+            :min="1"
+            :max="voteMax"
+            :step="1"
+          />
+        </a-col>
+        <a-col :span="4">
+          <a-input-number v-model="voteModal.amount" :min="1" :max="voteMax" />
+        </a-col>
+      </a-row>
+    </a-modal>
+    <v-modal />
   </div>
 </template>
 <script>
-
 import config from "@/config";
 import Mixin from "@/mixin/mixin.vue";
 
-import VModal from '@/components/Modal'
+import VModal from "@/components/Modal";
 import AdminCard from "@/components/AdminCard";
 import pred_abi from "@/abi/pred_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
 
-
 export default {
   mixins: [Mixin],
-  components: {  AdminCard,VModal },
+  components: { AdminCard, VModal },
   data() {
     return {
       change_network: false,
@@ -345,15 +329,19 @@ export default {
       let pageInfo = self.$route;
       let predAddress = pageInfo.query.predAddress;
       self.predAddress = predAddress;
-      let predInfo = await self.getPredictionInfo(predAddress)
-      console.log("predInfo",predInfo)
+      let predInfo = await self.getPredictionInfo(predAddress);
+      console.log("predInfo", predInfo);
       let allShares = predInfo.sideAShares + predInfo.sideBShares;
       let percentA, percentB;
       if (allShares == 0) {
         percentA = percentB = 0;
       } else {
-        percentA = parseFloat(((predInfo.sideAShares / allShares) * 100).toFixed(2));
-        percentB = parseFloat(((predInfo.sideBShares / allShares) * 100).toFixed(2));
+        percentA = parseFloat(
+          ((predInfo.sideAShares / allShares) * 100).toFixed(2)
+        );
+        percentB = parseFloat(
+          ((predInfo.sideBShares / allShares) * 100).toFixed(2)
+        );
       }
       self.vote_info = {
         fee: predInfo.fee,
@@ -367,9 +355,9 @@ export default {
         shareA: predInfo.sideAShares,
         shareB: predInfo.sideBShares,
         predIntroHash: predInfo.predIntroHash,
-      }
-       
-      self.$store.commit('setPredContract',{contract:predInfo.contract})
+      };
+
+      self.$store.commit("setPredContract", { contract: predInfo.contract });
 
       let tokenContract = await new self.$ethers.Contract(
         predInfo.CoinAddress,
@@ -377,14 +365,14 @@ export default {
         self.web3
       );
       let token_name = await tokenContract.symbol();
-       self.token_info.token_name = token_name
+      self.token_info.token_name = token_name;
       self.contract = predInfo.contract;
       self.tokenContract = tokenContract;
       self.loading.basic_loading = false;
       await self.getAllowance();
       await self.getUserShare();
       let claimed = await self.contract.claimedList(self.wallet_address);
-      
+
       self.shareInfo.claimed = claimed;
       if (predInfo.voteState == 3) {
         let winner = await self.contract.winner();
@@ -435,7 +423,7 @@ export default {
       self.voteModal = {
         side: 0,
         amount: 1,
-      }
+      };
     },
     openModal(side) {
       let self = this;
@@ -447,8 +435,8 @@ export default {
       self.loading.modal_loading = true;
       let signer = self.web3.getSigner();
       let contract = self.contract.connect(signer);
-      let amount = self.voteModal.amount*self.vote_info.sharePrice
-      console.log(amount)
+      let amount = self.voteModal.amount * self.vote_info.sharePrice;
+      console.log(amount);
       contract.voteERC20(self.voteModal.side, amount).then(
         async (tx) => {
           await tx.wait();
@@ -474,7 +462,6 @@ export default {
         self.voteMax = 200 - self.userShares;
       }
     },
-   
   },
   computed: {
     canClaimAmount() {
@@ -512,10 +499,9 @@ export default {
   }
 }
 .detail-page {
-  
-&.withShadow {
-      filter: blur(7px);
-    }
+  &.withShadow {
+    filter: blur(7px);
+  }
   .ant-btn-primary {
     &.first {
       background-color: #f2992e;

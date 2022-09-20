@@ -5,7 +5,6 @@
       :class="{
         edit_desc: step == 1,
         edit_contract: step == 2,
-        loading_cover: loading.basic_loading,
       }"
       v-if="step == 1"
     >
@@ -48,7 +47,6 @@
     <div
       class="form-box"
       v-if="step == 2"
-      :class="{ loading_cover: loading.contract_loading }"
     >
       <div class="title">Full Fill Your Prediction</div>
       <div class="input-block">
@@ -71,12 +69,11 @@
       </div>
       <div class="input-block" v-if="contract_info.checked_address">
         <div class="input-title">Coin Info</div>
-        <div class="group">
+        <div class="group" style="margin-top: 8px;margin-bottom: 20px">
           <div class="coin-info-block">
             Token Symbol :{{ token_info.symbol }}
           </div>
-
-          <button class="btn" @click="change_token">Change Token</button>
+          <button class="btn" @click="change_token">Change</button>
         </div>
       </div>
       <div class="input-block" v-else>
@@ -85,8 +82,9 @@
           <div class="sub">should be the address of token</div>
         </div>
         <div class="group" v-if="token_list">
-          <div class="select-group">
-            <select
+          <!-- <div class="select-group"> -->
+            <TySelect :list="token_list" v-model="selectTokenName" @changeValue="select_token" style="margin-bottom:20px" />
+            <!-- <select
               name=""
               id=""
               v-model="selectTokenName"
@@ -101,21 +99,29 @@
                 {{ tokenName }}:{{ tokenAddress }}
               </option>
               <option value="Other" key="Other">Other</option>
-            </select>
-          </div>
+            </select> -->
+          <!-- </div> -->
         </div>
         <div class="group" v-if="selectTokenName == 'Other'">
           <input type="text" v-model="contract_info.coin_address" />
-          <button class="btn" @click="load_token">Load Token</button>
+          <button class="btn" @click="load_token">Load</button>
         </div>
       </div>
-      <button
-        class="btn"
-        @click="createContract"
-        v-if="contract_info.checked_address"
-      >
-        Submit
-      </button>
+      <div class="submit-btn">
+        <button
+          class="btn"
+          @click="createContract"
+          v-if="contract_info.checked_address"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+    <div class="loading-cover" v-if="loading.contract_loading">
+      <div class="loading-content">
+        <img src="@/assets/images/loading.png" alt="">
+        <p>loading...</p>
+      </div>
     </div>
   </div>
 </template>
@@ -124,10 +130,10 @@ import { create } from "ipfs-http-client";
 import bank_abi from "@/abi/bank_abi.json";
 // TODO 修改bank名称
 import Mixin from "@/mixin/mixin.vue";
-
+import TySelect from '@/components/Select';
 export default {
   mixins: [Mixin],
-
+  components: { TySelect },
   data() {
     return {
       step: 1,
@@ -159,7 +165,7 @@ export default {
   },
   computed: {
     token_list() {
-      return this.networkInfo ? this.networkInfo.token_list : [];
+      return this.networkInfo ? this.networkInfo.token_list : {};
     },
   },
 
@@ -170,9 +176,9 @@ export default {
   },
 
   methods: {
-    select_token() {
+    select_token(e) {
       let self = this;
-
+      self.selectTokenName = e
       let token_name = self.selectTokenName;
       console.log(token_name);
       if (token_name == "Other") {
@@ -276,48 +282,23 @@ export default {
 };
 </script>
 <style lang="less">
-@keyframes loading {
-  0% {
-    background-color: rgba(256, 256, 256, 0.1);
-    color: white;
-    font-size: 12px;
-  }
-  100% {
-    background-color: rgba(256, 256, 256, 0.9);
-    color: black;
-    font-size: 20px;
-  }
-}
-.loading_cover {
-  position: relative;
-  &:before {
-    animation: loading 0.2s ease-out;
-    animation-fill-mode: forwards;
-    content: "Loading...";
-    // color:black;
-    // font-size:20px;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
-    display: flex;
-    z-index: 10;
-    position: absolute;
-    // background-color: rgba(256,256,256,.8);
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-}
 .new-prediction {
   color: black;
+  width: 560px;
+  margin: auto;
+  font-family: 'Inter';
   .form-box {
-    margin-bottom: 20px;
+    margin-top: 32px;
     overflow: hidden;
+    padding-bottom: 200px;
     .title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
+      font-family: 'Avenir';
+      font-style: normal;
+      font-weight: 800;
+      font-size: 24px;
+      line-height: 33px;
+      color: #1E2022;
+      margin-bottom: 24px;
     }
     button.btn {
       background-color: black;
@@ -330,77 +311,183 @@ export default {
       cursor: pointer;
     }
     .submit-btn {
+      .btn {
+        width: 560px;
+        height: 44px;
+        background: #1E2022;
+        border-radius: 2px;
+        margin-top: 4px;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 19px;
+        color: #FFFFFF;
+        font-family: 'Inter';
+      }
     }
     .input-block {
-      color: #35393f;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       .coin-info-block {
-        border: 2px solid black;
-        height: 35px;
-        line-height: 31px;
-        width: 100%;
-        padding: 0px 10px;
-        box-sizing: border-box;
-      }
-      .input-title {
-        font-size: 14px;
+        width: 560px;
+        height: 44px;
+        background: #FFFFFF;
+        border: 1px solid #E8EAEF;
+        border-radius: 2px;
+        padding: 0 16px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 150%;
+        color: #1E2022;
         display: flex;
         align-items: center;
-        font-weight: bold;
-        margin-bottom: 10px;
+      }
+      .input-title {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 150%;
+        color: #1E2022;
+        display: flex;
+        align-items: center;
         .sub {
+          font-family: 'Inter';
+          font-style: normal;
+          font-weight: 400;
           font-size: 12px;
-          color: #0f1f37;
-          margin-left: 10px;
-          font-weight: 100;
+          line-height: 15px;
+          margin-left: 16px;
+          color: #8796A3;
         }
       }
       .group {
         display: flex;
         align-items: center;
+        input {
+          margin: 0;
+        }
         .btn {
-          height: 35px;
-          line-height: 35px;
+          width: 72px;
+          height: 44px;
+          background: #1E2022;
+          border-radius: 2px;
+          font-weight: 600;
+          font-size: 16px;
+          line-height: 19px;
+          text-align: right;
+          color: #FFFFFF;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         .select-group {
-          width: 100%;
-          border: 2px solid black;
-
-          padding: 0px 10px;
+          width: 560px;
+          height: 44px;
+          background: #FFFFFF;
+          border: 1px solid #E8EAEF;
+          border-radius: 2px;
+          margin-top: 8px;
           margin-bottom: 20px;
+          padding: 0 16px;
         }
         select {
+          height: 100%;
           width: 100%;
-          border: unset;
-          outline: unset;
-          height: 35px;
-          line-height: 35px;
-          //   -webkit-appearance: none;
-          //   -moz-appearance: none;
-          //   appearance: none;
-          position: relative;
+          border: none;
+          background: none;
+          outline: none;
           option {
-            padding: 0px 10px;
+            height: 44px !important;
+            background: #F3F4F9;
+            border-radius: 2px;
           }
         }
       }
       .btn {
       }
       textarea {
-        width: 100%;
-        outline: unset;
-        border: 2px solid black;
-        padding: 5px 10px;
+        width: 560px;
+        height: 100px;
+        background: #FFFFFF;
+        border: 1px solid #E8EAEF;
+        border-radius: 2px;
+        margin-top: 8px;
+        resize: none;
+        outline: none;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        color: #1E2022;
+        padding: 12px 16px;
+        box-sizing: border-box;
+        &::placeholder {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 19px;
+          color: #BDC6D0;
+        }
       }
       input {
-        outline: unset;
-        border: 2px solid black;
-        height: 35px;
-        line-height: 31px;
-        padding: 0px 10px;
-        width: 100%;
+        width: 560px;
+        height: 44px;
+        background: #FFFFFF;
+        border: 1px solid #E8EAEF;
+        border-radius: 2px;
+        margin-top: 8px;
+        outline: none;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        color: #1E2022;
+        padding: 0 16px;
+        box-sizing: border-box;
+        font-style: normal;
+        &::placeholder {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 19px;
+          color: #BDC6D0;
+        }
       }
     }
+  }
+  .loading-cover {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 80px;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(22px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .loading-content {
+      text-align: center;
+      img {
+        width: 40px;
+        height: 40px;
+        animation: loading 1.5s linear infinite;
+      }
+      p {
+        font-family: 'Inter';
+        margin-top: 32px;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 22px;
+        color: #1E2022;
+      }
+    }
+  }
+}
+@keyframes loading {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>

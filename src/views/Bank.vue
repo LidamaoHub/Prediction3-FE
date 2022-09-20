@@ -3,7 +3,8 @@
     <div class="body">
       <div class="container">
         <div class="content">
-          If you have the Family NFT ,You can claim nft holdings * 1000 tokens, that might be slow
+          If you have the Family NFT ,You can claim nft holdings * 1000 tokens,
+          that might be slow
         </div>
         <div class="user_info">
           <a-statistic
@@ -11,15 +12,15 @@
             :value="balance"
             style="margin-right: 50px"
           />
-            <a-spin :spinning="balance_loading">
-          <a-statistic
-            title="NFT Balance"
-            :value="nft_balance"
-            style="margin-right: 50px"
+          <a-spin :spinning="balance_loading">
+            <a-statistic
+              title="NFT Balance"
+              :value="nft_balance"
+              style="margin-right: 50px"
           /></a-spin>
-            <a-spin :spinning="can_claim_loading">
-          <a-statistic title="Can Claim" :value="can_claim" />
-            </a-spin>
+          <a-spin :spinning="can_claim_loading">
+            <a-statistic title="Can Claim" :value="can_claim" />
+          </a-spin>
         </div>
         <div>
           <a-button
@@ -47,8 +48,7 @@ const token_address = config.token_address;
 const nft_address = "0x221e2ee1b904d2a6ba9dd8ab630c4ac7d704895d";
 export default {
   mixins: [Mixin],
-  components: {
-  },
+  components: {},
   data() {
     return {
       balance: 0,
@@ -58,22 +58,21 @@ export default {
       btn_loading: false,
       nftContract: null,
       token_list: [],
-      balance_loading:true,
-      can_claim_loading:true
+      balance_loading: true,
+      can_claim_loading: true,
     };
   },
   methods: {
     async get_balance() {
       let self = this;
-
     },
     async getNftList() {
       let self = this;
       let token_id = await this.nftContract.tokenId();
       token_id = parseInt(token_id);
-      
+
       let token_list = [];
-      
+
       for (let i = 1; i < token_id; i++) {
         let add = await self.nftContract.ownerOf(i);
         if (self.wallet_address == add) {
@@ -82,7 +81,7 @@ export default {
       }
       self.token_list = token_list;
       self.nft_balance = self.token_list.length;
-      self.balance_loading = false
+      self.balance_loading = false;
     },
     async claim() {
       let self = this;
@@ -105,12 +104,12 @@ export default {
       let amount = 0;
       for (let i = 0; i < self.token_list.length; i++) {
         let address = await self.contract.userClaim(self.token_list[i]);
-        if (address=="0x0000000000000000000000000000000000000000") {
+        if (address == "0x0000000000000000000000000000000000000000") {
           amount += 1;
         }
       }
       self.can_claim = amount * 1000;
-      self.can_claim_loading = false
+      self.can_claim_loading = false;
     },
     async init() {
       let self = this;
@@ -132,7 +131,7 @@ export default {
         self.web3
       );
       self.nftContract = nft_contract;
-      
+
       await self.getNftList();
       await self.get_can_claim();
     },
