@@ -131,6 +131,7 @@ import bank_abi from "@/abi/bank_abi.json";
 // TODO 修改bank名称
 import Mixin from "@/mixin/mixin.vue";
 import TySelect from '@/components/Select';
+import { getInfo } from '../../http/api'
 export default {
   mixins: [Mixin],
   components: { TySelect },
@@ -171,8 +172,19 @@ export default {
 
   async mounted() {
     let self = this;
-    const ipfs = await create("https://ipfs.infura.io:5001");
-    self.ipfs = ipfs;
+    const projectId = '2F9wcLT9HmZV97OM9FU4duaMr48';
+    const projectSecret = 'aedf125bf62129c57cfee37a7453d7d5';
+    const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+    // const ipfs = await create("https://ipfs.infura.io:5001");
+    const client = await create({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+      headers: {
+        authorization: auth,
+      },
+    })
+    self.ipfs = client;
   },
 
   methods: {
@@ -201,6 +213,7 @@ export default {
       let ddl = parseInt(Date.now() / 1000) + 60 * 60 * 24 * 60;
       self.basic_info.deadline = ddl;
       let predInfo = self.basic_info;
+      console.log(predInfo)
       if (
         predInfo.title &&
         predInfo.description &&
@@ -208,9 +221,13 @@ export default {
         predInfo.deadline
       ) {
         let result = await self.ipfs.add(JSON.stringify(predInfo));
-        let url = `https://ipfs.infura.io/ipfs/${result.path}`;
+        console.log(predInfo, result)
+        // let url = `https://ipfs.infura.io/ipfs/${result.path}`;
         self.contract_info.metahash = result.path;
-        let info = await self.$http.get(url);
+        // let info = await self.$http.get(url);
+        let info = await self.ipfs.get(result.path);
+        // await getInfo({arg: result.path})
+        console.log(info)
         self.step = 2;
         self.loading.basic_loading = false;
       } else {

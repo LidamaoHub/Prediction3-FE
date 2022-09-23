@@ -231,7 +231,7 @@
 <script>
 import config from "@/config";
 import Mixin from "@/mixin/mixin.vue";
-
+import { getInfo } from '../../http/api'
 import VModal from "@/components/Modal";
 import AdminCard from "@/components/AdminCard";
 import pred_abi from "@/abi/pred_abi.json";
@@ -378,11 +378,14 @@ export default {
         let winner = await self.contract.winner();
         self.winner = parseInt(winner) == 1 ? "SideA" : "SideB";
       }
-      self.$http
-        .get(`https://ipfs.infura.io/ipfs/${predInfo.predIntroHash}`)
-        .then((data) => {
-          self.page_info = data.data;
-        });
+      getInfo({arg: predInfo.predIntroHash}).then(res => {
+        console.log(JSON.parse(res))
+      })
+      // self.$http
+      //   .get(`https://cf-ipfs.com/${predInfo.predIntroHash}`)
+      //   .then((data) => {
+      //     self.page_info = data.data;
+      //   });
     },
     fromWei(num) {
       return this.$ethers.utils.formatEther(num);

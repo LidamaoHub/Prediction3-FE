@@ -80,7 +80,7 @@ export default {
           try {
             let addr = await self.factoryContract.getPredict(i);
             let predInfo = await self.getPredictionInfo(addr);
-            let url = `https://ipfs.infura.io/ipfs/${predInfo.predIntroHash}`;
+            let url = `https://cf-ipfs.com/${predInfo.predIntroHash}`;
 
             let info = await self.$http.get(url);
             if (info.status == 200) {
