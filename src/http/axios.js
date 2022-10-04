@@ -1,16 +1,9 @@
 import axios from 'axios';
-let baseURL = 'https://ipfs.infura.io:5001'
+let baseURL = 'https://ipfs.io'
 axios.defaults.timeout = 90000;
-const projectId = '2F9wcLT9HmZV97OM9FU4duaMr48';
-const projectSecret = 'aedf125bf62129c57cfee37a7453d7d5';
 //http request 拦截器
 axios.interceptors.request.use(
   config => {
-    const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
-    config.headers = {
-      'authorization': auth,
-    }
-    console.log(config)
     return config;
   },
   error => {

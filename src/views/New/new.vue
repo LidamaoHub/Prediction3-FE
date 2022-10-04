@@ -117,7 +117,7 @@
         </button>
       </div>
     </div>
-    <div class="loading-cover" v-if="loading.contract_loading">
+    <div class="loading-cover" v-if="loading.contract_loading || loading.basic_loading">
       <div class="loading-content">
         <img src="@/assets/images/loading.png" alt="">
         <p>loading...</p>
@@ -222,11 +222,8 @@ export default {
       ) {
         let result = await self.ipfs.add(JSON.stringify(predInfo));
         console.log(predInfo, result)
-        // let url = `https://ipfs.infura.io/ipfs/${result.path}`;
         self.contract_info.metahash = result.path;
-        // let info = await self.$http.get(url);
-        let info = await self.ipfs.get(result.path);
-        // await getInfo({arg: result.path})
+        let info = await getInfo({arg: result.path});
         console.log(info)
         self.step = 2;
         self.loading.basic_loading = false;
