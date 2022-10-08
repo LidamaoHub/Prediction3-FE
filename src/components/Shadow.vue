@@ -1,7 +1,7 @@
 <template>
-  <div class="network-shadow" v-if="badChainId">
+  <div class="network-shadow" v-if="badChainId" @touchmove.prevent @mousewheel.prevent>
     <div class="body">
-      <img src="@/assets/images/img_network.png" alt="" class="network-img">
+      <img src="@/assets/images/img_network.svg" alt="" class="network-img">
       <div class="title">This feature is not yet supported on this network</div>
       <div class="content">Please select the following networks</div>
       <div class="network-list">

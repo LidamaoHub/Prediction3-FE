@@ -10,7 +10,11 @@
           <img src="@/assets/images/index_img3.png" alt="">
         </div>
         <div class="desc">Prediction3 is a social and fully decentralized "dispute resolution solution".</div>
-        <div class="make-btn">Make a Prediction!</div>
+        <div class="make-btn">
+          <router-link :to="{ name: 'New' }">
+            Make a Prediction!
+          </router-link>
+        </div>
       </div>
       <div class="part-3">
         <img src="@/assets/images/index_img2.png" alt="">
@@ -148,6 +152,13 @@ export default {
         border-radius: 6px;
         margin: auto;
         margin-top: 55px;
+        a {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
       }
     }
     .part-3 {

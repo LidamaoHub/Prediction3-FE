@@ -26,7 +26,7 @@
       <div class="info-hd">
         <div class="info-title">{{page_info.title}}</div>
         <div class="info-operation">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" @click="share">
             <path d="M8.68408 13.3419C8.88608 12.9379 9.00008 12.4819 9.00008 11.9999C9.00008 11.5179 8.88608 11.0619 8.68408 10.6579M8.68408 13.3419C8.38178 13.9463 7.88428 14.4309 7.27217 14.7172C6.66007 15.0036 5.96921 15.0749 5.31152 14.9196C4.65384 14.7643 4.06785 14.3915 3.64849 13.8615C3.22914 13.3316 3.00098 12.6756 3.00098 11.9999C3.00098 11.3241 3.22914 10.6681 3.64849 10.1382C4.06785 9.60828 4.65384 9.23547 5.31152 9.08017C5.96921 8.92486 6.66007 8.99616 7.27217 9.28251C7.88428 9.56886 8.38178 10.0535 8.68408 10.6579M8.68408 13.3419L15.3161 16.6579M8.68408 10.6579L15.3161 7.34187M15.3161 16.6579C14.9602 17.3697 14.9016 18.1938 15.1533 18.9488C15.4049 19.7038 15.9462 20.3279 16.6581 20.6839C17.3699 21.0398 18.194 21.0984 18.949 20.8467C19.704 20.595 20.3282 20.0537 20.6841 19.3419C21.04 18.63 21.0986 17.806 20.8469 17.0509C20.5952 16.2959 20.0539 15.6718 19.3421 15.3159C18.9896 15.1396 18.6059 15.0346 18.2128 15.0066C17.8197 14.9787 17.425 15.0284 17.0511 15.1531C16.2961 15.4047 15.672 15.946 15.3161 16.6579ZM15.3161 7.34187C15.4923 7.69427 15.7362 8.00851 16.0339 8.26665C16.3316 8.52478 16.6772 8.72176 17.051 8.84633C17.4248 8.9709 17.8195 9.02062 18.2125 8.99266C18.6055 8.9647 18.9892 8.8596 19.3416 8.68337C19.694 8.50714 20.0082 8.26322 20.2664 7.96554C20.5245 7.66786 20.7215 7.32226 20.846 6.94845C20.9706 6.57465 21.0203 6.17997 20.9924 5.78695C20.9644 5.39394 20.8593 5.01027 20.6831 4.65787C20.3272 3.94616 19.7031 3.40499 18.9482 3.15341C18.1932 2.90183 17.3693 2.96045 16.6576 3.31637C15.9459 3.67229 15.4047 4.29636 15.1531 5.05129C14.9015 5.80621 14.9602 6.63016 15.3161 7.34187Z" stroke="#8796A3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -87,7 +87,9 @@
               <div class="progress-percent" :style="{width: vote_info.percentA + '%'}"></div>
             </div>
           </div>
-          <div class="progress-item-r" @click="openModal('A', page_info.options[0], 1)">Support A</div>
+          <div :class="['progress-item-r', userSide == 'SideB' ? 'progress-item-r-not' : userSide == 'SideA' ? 'progress-item-r-s-a' : '']" @click="openModal('A', page_info.options[0], 1)">Support A
+            <img v-if="userSide == 'SideA'" src="@/assets/images/select_a.png" alt="">
+          </div>
         </div>
         <div class="progress-item">
           <div class="progress-item-l">
@@ -98,7 +100,9 @@
               <div class="progress-percent" :style="{width: vote_info.percentB + '%', background: '#1E2022'}"></div>
             </div>
           </div>
-          <div class="progress-item-r" style="background: #1E2022;"  @click="openModal('B', page_info.options[1], 2)">Support B</div>
+          <div :class="['progress-item-r', userSide == 'SideA' ? 'progress-item-r-not' : userSide == 'SideB' ? 'progress-item-r-s' : '']" style="background: #1E2022;"  @click="openModal('B', page_info.options[1], 2)">Support B
+            <img v-if="userSide == 'SideB'" src="@/assets/images/select_a.png" alt="">
+          </div>
         </div>
       </div>
     </div>
@@ -241,6 +245,13 @@ export default {
     radioGroupChange(e) {
       console.log(e)
     },
+    share() {
+      let value = `${this.page_info.title}: ${window.location.href}`
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(value)
+        this.$message.success('The shared content was successfully copied', 3);
+      }
+    },
     async claim() {
       let self = this;
       self.loading.claimLoading = true;
@@ -340,11 +351,13 @@ export default {
             console.log('result', result)
             await result.wait();
             await self.getAllowance();
+            self.closeModal()
             self.loading.modal_loading = false;
           },
           (error) => {
             self.loading.modal_loading = false;
             self.dealError(error);
+            self.closeModal()
           }
         );
     },
@@ -368,6 +381,7 @@ export default {
       };
     },
     openModal(options, sideTitle, side) {
+      if (this.userShares) return
       let self = this;
       self.voteModal.side = side;
       self.voteModal.sideTitle = sideTitle;
@@ -390,6 +404,7 @@ export default {
         },
         (error) => {
           console.log(error)
+          self.closeModal();
           self.loading.modal_loading = false;
           self.dealError(error.data);
         }
@@ -534,6 +549,7 @@ export default {
         svg {
           width: 24px;
           height: 24px;
+          cursor: pointer;
           & ~ svg {
             margin-left: 18px;
           }
@@ -652,6 +668,31 @@ export default {
           text-align: center;
           color: #FFFFFF;
           cursor: pointer;
+          position: relative;
+          img {
+            width: 24px;
+            height: 24px;
+            position: absolute;
+            right: -12px;
+            top: -12px;
+          }
+          &.progress-item-r-not {
+            background: #F3F4F9 !important;
+            color: #8796A3;
+            cursor:not-allowed;
+          }
+          &.progress-item-r-s {
+            background: #FFFFFF !important;
+            border: 2px solid rgba(30, 32, 34, 0.3);
+            color: #1E2022;
+            cursor:not-allowed;
+          }
+          &.progress-item-r-s-a {
+            background: #FFFFFF !important;
+            border: 2px solid rgba(38, 54, 200, 0.3);
+            color: #2636C8;
+            cursor:not-allowed;
+          }
         }
       }
     }

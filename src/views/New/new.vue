@@ -223,8 +223,8 @@ export default {
         let result = await self.ipfs.add(JSON.stringify(predInfo));
         console.log(predInfo, result)
         self.contract_info.metahash = result.path;
-        let info = await getInfo({arg: result.path});
-        console.log(info)
+        // let info = await getInfo({arg: result.path});
+        // console.log(info)
         self.step = 2;
         self.loading.basic_loading = false;
       } else {
