@@ -19,6 +19,7 @@
 <script>
 import { mapState } from "vuex";
 import config from "@/config";
+import { walletSwitchChain } from '../assets/js/walletSwitchChain'
 export default {
   data() {
     return {};
@@ -27,15 +28,9 @@ export default {
   },
   methods: {
     async change_chain(network) {
-      window.ethereum
-        .request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: network.chainId }],
-        })
-        .then((res) => {
-          window.location.reload();
-        })
-        .catch((error) => {});
+      walletSwitchChain(network.chainId).then(res => {
+        window.location.reload();
+      })
     },
   },
   watch: {

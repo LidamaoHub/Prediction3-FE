@@ -9,7 +9,7 @@
           <img src="@/assets/images/add.png" alt="">
           Create Prediction
         </router-link>
-        <router-link :to="{ name: 'New' }" class="menu-item">
+        <router-link :to="{ name: 'Favorites' }" class="menu-item">
           <img src="@/assets/images/favorites.png" alt="">
           My Favorites
         </router-link>
@@ -64,6 +64,7 @@
 import config from "@/config";
 import Avatar from "vue2-boring-avatars";
 import mixin from "../mixin/mixin.vue";
+import { walletSwitchChain } from '../assets/js/walletSwitchChain'
 export default {
   mixins: [mixin],
   components: { Avatar },
@@ -82,18 +83,9 @@ export default {
       await window.ethereum.request({ method: 'eth_requestAccounts' }) 
     },
     async change_chain(network) {
-      let self = this
-      window.ethereum
-        .request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: network.chainId }],
-        })
-        .then((res) => {
-          self.$router.push({name:"Home"})
-
-        })
-        .catch((error) => {
-        });
+      walletSwitchChain(network.chainId).then(res => {
+        window.location.href = '/'
+      })
     },
   },
   computed: {

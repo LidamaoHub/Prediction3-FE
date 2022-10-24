@@ -29,9 +29,13 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" @click="share">
             <path d="M8.68408 13.3419C8.88608 12.9379 9.00008 12.4819 9.00008 11.9999C9.00008 11.5179 8.88608 11.0619 8.68408 10.6579M8.68408 13.3419C8.38178 13.9463 7.88428 14.4309 7.27217 14.7172C6.66007 15.0036 5.96921 15.0749 5.31152 14.9196C4.65384 14.7643 4.06785 14.3915 3.64849 13.8615C3.22914 13.3316 3.00098 12.6756 3.00098 11.9999C3.00098 11.3241 3.22914 10.6681 3.64849 10.1382C4.06785 9.60828 4.65384 9.23547 5.31152 9.08017C5.96921 8.92486 6.66007 8.99616 7.27217 9.28251C7.88428 9.56886 8.38178 10.0535 8.68408 10.6579M8.68408 13.3419L15.3161 16.6579M8.68408 10.6579L15.3161 7.34187M15.3161 16.6579C14.9602 17.3697 14.9016 18.1938 15.1533 18.9488C15.4049 19.7038 15.9462 20.3279 16.6581 20.6839C17.3699 21.0398 18.194 21.0984 18.949 20.8467C19.704 20.595 20.3282 20.0537 20.6841 19.3419C21.04 18.63 21.0986 17.806 20.8469 17.0509C20.5952 16.2959 20.0539 15.6718 19.3421 15.3159C18.9896 15.1396 18.6059 15.0346 18.2128 15.0066C17.8197 14.9787 17.425 15.0284 17.0511 15.1531C16.2961 15.4047 15.672 15.946 15.3161 16.6579ZM15.3161 7.34187C15.4923 7.69427 15.7362 8.00851 16.0339 8.26665C16.3316 8.52478 16.6772 8.72176 17.051 8.84633C17.4248 8.9709 17.8195 9.02062 18.2125 8.99266C18.6055 8.9647 18.9892 8.8596 19.3416 8.68337C19.694 8.50714 20.0082 8.26322 20.2664 7.96554C20.5245 7.66786 20.7215 7.32226 20.846 6.94845C20.9706 6.57465 21.0203 6.17997 20.9924 5.78695C20.9644 5.39394 20.8593 5.01027 20.6831 4.65787C20.3272 3.94616 19.7031 3.40499 18.9482 3.15341C18.1932 2.90183 17.3693 2.96045 16.6576 3.31637C15.9459 3.67229 15.4047 4.29636 15.1531 5.05129C14.9015 5.80621 14.9602 6.63016 15.3161 7.34187Z" stroke="#8796A3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg v-if="!isCollectList" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" @click="collect">
             <path d="M12.9511 2.92708C12.6521 2.00608 11.3491 2.00608 11.0491 2.92708L9.5301 7.60108C9.46467 7.80173 9.33744 7.97654 9.16662 8.10048C8.9958 8.22442 8.79014 8.29113 8.5791 8.29108H3.6651C2.6971 8.29108 2.2931 9.53108 3.0771 10.1011L7.0531 12.9891C7.22389 13.1132 7.351 13.2883 7.4162 13.4891C7.48141 13.6899 7.48137 13.9063 7.4161 14.1071L5.8981 18.7811C5.5981 19.7021 6.6531 20.4691 7.4361 19.8991L11.4121 17.0111C11.583 16.8869 11.7888 16.8199 12.0001 16.8199C12.2114 16.8199 12.4172 16.8869 12.5881 17.0111L16.5641 19.8991C17.3471 20.4691 18.4021 19.7031 18.1021 18.7811L16.5841 14.1071C16.5188 13.9063 16.5188 13.6899 16.584 13.4891C16.6492 13.2883 16.7763 13.1132 16.9471 12.9891L20.9231 10.1011C21.7061 9.53108 21.3041 8.29108 20.3351 8.29108H15.4201C15.2092 8.29092 15.0038 8.22411 14.8332 8.10018C14.6625 7.97626 14.5355 7.80157 14.4701 7.60108L12.9511 2.92708Z" stroke="#8796A3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
+          <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" @click="unCollect">
+            <path d="M12.9511 2.92708C12.6521 2.00608 11.3491 2.00608 11.0491 2.92708L9.5301 7.60108C9.46467 7.80173 9.33744 7.97654 9.16662 8.10048C8.9958 8.22442 8.79014 8.29113 8.5791 8.29108H3.6651C2.6971 8.29108 2.2931 9.53108 3.0771 10.1011L7.0531 12.9891C7.22389 13.1132 7.351 13.2883 7.4162 13.4891C7.48141 13.6899 7.48137 13.9063 7.4161 14.1071L5.8981 18.7811C5.5981 19.7021 6.6531 20.4691 7.4361 19.8991L11.4121 17.0111C11.583 16.8869 11.7888 16.8199 12.0001 16.8199C12.2114 16.8199 12.4172 16.8869 12.5881 17.0111L16.5641 19.8991C17.3471 20.4691 18.4021 19.7031 18.1021 18.7811L16.5841 14.1071C16.5188 13.9063 16.5188 13.6899 16.584 13.4891C16.6492 13.2883 16.7763 13.1132 16.9471 12.9891L20.9231 10.1011C21.7061 9.53108 21.3041 8.29108 20.3351 8.29108H15.4201C15.2092 8.29092 15.0038 8.22411 14.8332 8.10018C14.6625 7.97626 14.5355 7.80157 14.4701 7.60108L12.9511 2.92708Z" fill="#1E2022" stroke="#1E2022" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+
         </div>
       </div>
       <div class="info-desc">{{page_info.description}}</div>
@@ -172,7 +176,7 @@ import VModal from "@/components/Modal";
 import AdminCard from "@/components/AdminCard";
 import pred_abi from "@/abi/pred_abi.json";
 import bank_abi from "@/abi/bank_abi.json";
-
+import {getLs, setLs} from '../../local/local'
 export default {
   mixins: [Mixin],
   components: { AdminCard, VModal },
@@ -222,9 +226,15 @@ export default {
       token_info: {
         token_name: "",
       },
+      isCollectList: false,
+      collectList: []
     };
   },
-  async created() {},
+  async created() {
+    getLs('collectList').then(res => {
+      this.collectList = res || []
+    })
+  },
   async mounted() {
     let self = this;
     if (self.web3) {
@@ -232,6 +242,10 @@ export default {
     }
   },
   watch: {
+    collectList() {
+      let predAddress = this.$route.query.predAddress
+      this.isCollectList = this.collectList.some(e => e.predAddress == predAddress)
+    },
     // async web3() {
     //   let self = this;
     //   self.init();
@@ -244,6 +258,30 @@ export default {
   methods: {
     radioGroupChange(e) {
       console.log(e)
+    },
+    collect() {
+      console.log(this.page_info)
+      let collectList = this.collectList || []
+      let { title, description } = this.page_info
+      let itemData = {
+        title,
+        description,
+        predAddress: this.predAddress
+      }
+      collectList.push(itemData)
+      setLs('collectList', collectList).then(res => {
+        console.log(res)
+        this.collectList = res || []
+      })
+    },
+    unCollect() {
+      let collectList = this.collectList || []
+      let predAddress = this.predAddress
+      collectList = collectList.filter(e => e.predAddress != predAddress)
+      setLs('collectList', collectList).then(res => {
+        console.log(res)
+        this.collectList = res || []
+      })
     },
     share() {
       let value = `${this.page_info.title}: ${window.location.href}`
