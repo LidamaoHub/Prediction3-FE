@@ -224,6 +224,7 @@ export default {
         color: #000;
         border: 1px solid #1E2022;
         cursor: pointer;
+        text-shadow: none;
       }
     }
 
