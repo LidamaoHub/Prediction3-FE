@@ -15,6 +15,8 @@
             Make a Prediction!
           </router-link>
         </div>
+        <a-button type="primary" class="make-btn claim-btn" block :disabled="loading.open" @click="claim"
+          :loading="loading.open">Claim 100 Test Token</a-button>
       </div>
       <div class="part-3">
         <img src="@/assets/images/index_img2.png" alt="">
@@ -26,7 +28,8 @@
           <div class="section-flex-l">
             <div class="process">PROCESS</div>
             <div class="section-title">Why use the Prediction³<span>?</span></div>
-            <div class="section-desc">If you and your friends are in a dispute about whether future events will occur 🤼‍♂️ , <br /><span>Use Prediction3 immediately!</span></div>
+            <div class="section-desc">If you and your friends are in a dispute about whether future events will occur
+              🤼‍♂️ , <br /><span>Use Prediction3 immediately!</span></div>
           </div>
           <div class="section-flex-r">
             <img src="@/assets/images/index_img4.png" alt="">
@@ -37,13 +40,15 @@
             <div class="step-index">1</div>
             <img src="@/assets/images/index_img5.png" alt="">
             <div class="step-title">Find the <br /><span>arbitrator</span></div>
-            <div class="step-desc">Find an impartial third party friend to act as an arbiter <span>(or do it yourself).</span></div>
+            <div class="step-desc">Find an impartial third party friend to act as an arbiter <span>(or do it
+                yourself).</span></div>
           </div>
           <div class="flex-2 flex-item">
             <div class="step-index">2</div>
             <img src="@/assets/images/index_img6.png" alt="">
             <div class="step-title"><span>Description<br /></span>details</div>
-            <div class="step-desc">Give as much detail as possible about the prediction. <span>(if something other than what is described occurs, let the arbiter gives the final verdict).</span></div>
+            <div class="step-desc">Give as much detail as possible about the prediction. <span>(if something other than
+                what is described occurs, let the arbiter gives the final verdict).</span></div>
           </div>
           <div class="flex-3 flex-item">
             <div class="step-index">3</div>
@@ -54,7 +59,8 @@
           <div class="flex-4 flex-item">
             <div class="step-index">4</div>
             <div class="step-title">Publish<br /><span>results</span></div>
-            <div class="step-desc">The arbiter releases the results, the arbiter takes the commission, and the winner takes the prize.</div>
+            <div class="step-desc">The arbiter releases the results, the arbiter takes the commission, and the winner
+              takes the prize.</div>
           </div>
         </div>
       </div>
@@ -62,8 +68,48 @@
   </div>
 </template>
 <script>
+import abi from "@/abi/abi.json";
+import { mapState } from "vuex";
+import config from "@/config";
 export default {
-  
+  data() {
+    return {
+      loading: {
+        open: false,
+      },
+    };
+  },
+  computed: {
+    ...mapState(["badChainId", "web3"]),
+  },
+  methods: {
+    async claim() {
+      let user = this.web3.getSigner();
+      const networkId = this.web3?.network?.chainId;
+      if (networkId) {
+        this.loading.open = true;
+        const token_list = config.networks[networkId].token_list;
+        const tokenList = Object.values(token_list);
+        const token = tokenList[0];
+        const tokenContract = new this.$ethers.Contract(
+          token,
+          abi,
+          user
+        )
+        console.log("tokenContract", tokenContract);
+        try {
+          const res = await tokenContract.claim();
+          console.log("res", res);
+          await res.wait();
+          this.$message.success("Claim Success");
+        } catch (error) {
+          console.log("error", error);
+          this.$message.error("Claim Failed");
+        }
+        this.loading.open = false;
+      }
+    }
+  },
 }
 </script>
 <style lang="less" scoped>
@@ -74,17 +120,21 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+
     .part-1 {
       width: 305px;
       height: auto;
       margin-bottom: -250px;
+
       img {
         width: 305px;
         height: auto;
       }
     }
+
     .part-2 {
       margin-left: -52px;
+
       .welcome {
         font-weight: 400;
         font-size: 16px;
@@ -93,6 +143,7 @@ export default {
         letter-spacing: 0.02em;
         color: #8796A3;
       }
+
       .title {
         font-weight: 800;
         font-size: 54px;
@@ -104,10 +155,12 @@ export default {
         align-items: center;
         position: relative;
         font-weight: 800;
+
         span {
           color: rgba(38, 54, 200, 1);
           margin-left: .25em;
         }
+
         label {
           margin-left: 9px;
           font-weight: 700;
@@ -116,6 +169,7 @@ export default {
           text-align: center;
           color: #1E2022;
         }
+
         img {
           position: absolute;
           width: 285px;
@@ -126,6 +180,7 @@ export default {
           z-index: 0;
         }
       }
+
       .desc {
         width: 441px;
         font-weight: 400;
@@ -137,6 +192,7 @@ export default {
         margin: auto;
         margin-top: 52px;
       }
+
       .make-btn {
         font-weight: 800;
         font-size: 18px;
@@ -152,6 +208,7 @@ export default {
         border-radius: 6px;
         margin: auto;
         margin-top: 55px;
+
         a {
           width: 100%;
           height: 100%;
@@ -160,28 +217,42 @@ export default {
           justify-content: center;
         }
       }
+
+      .claim-btn {
+        background: none;
+        margin-top: 20px;
+        color: #000;
+        border: 1px solid #1E2022;
+        cursor: pointer;
+      }
     }
+
     .part-3 {
       margin-left: 10px;
       margin-top: 150px;
+
       img {
         width: 215px;
         height: auto;
       }
     }
   }
+
   .section-2 {
     background: #F8FAFC;
     // padding: 62px 16.6% 0;
     box-sizing: border-box;
     width: 100%;
+
     .section-2-content {
       padding: 62px 240px 170px;
       box-sizing: border-box;
       width: 100%;
+
       .section-flex-l {
         width: 546px;
         flex: 0 0 546px;
+
         .process {
           font-weight: 700;
           font-size: 16px;
@@ -189,12 +260,14 @@ export default {
           letter-spacing: 0.02em;
           color: #2636C8;
         }
+
         .section-title {
           font-weight: 800;
           font-size: 36px;
           line-height: 44px;
           color: #1E2022;
           margin-top: 18px;
+
           span {
             margin-left: 4px;
             font-weight: 700;
@@ -203,17 +276,20 @@ export default {
             color: #1E2022;
           }
         }
+
         .section-desc {
           margin-top: 14px;
           font-weight: 400;
           font-size: 14px;
           line-height: 26px;
           color: #1E2022;
+
           span {
             font-weight: 700;
           }
         }
       }
+
       .section-flex-r {
         img {
           width: 312.4px;
@@ -221,12 +297,15 @@ export default {
           transform: rotate(9.99deg);
         }
       }
+
       .flex-start-sb {
         margin-top: 59px;
+
         .flex-item {
           width: 216px;
           flex: 0 0 216px;
           position: relative;
+
           .step-index {
             width: 54px;
             height: 54px;
@@ -241,28 +320,34 @@ export default {
             color: #2636C8;
             border-radius: 30px;
           }
+
           .step-title {
             font-weight: 400;
             font-size: 36px;
             line-height: 46px;
             color: #1E2022;
             width: 100%;
+
             span {
               font-weight: 700;
             }
           }
+
           .step-desc {
             margin-top: 24px;
             font-weight: 400;
             font-size: 18px;
             line-height: 30px;
             color: #1E2022;
+
             span {
               color: #A0A6AC;
             }
           }
+
           &.flex-1 {
             margin-top: 5px;
+
             img {
               position: absolute;
               right: -50px;
@@ -270,13 +355,16 @@ export default {
               height: auto;
               top: 0;
             }
+
             .step-index {
               transform: rotate(-15deg);
               margin-bottom: 32px;
             }
           }
+
           &.flex-2 {
             margin-top: 105px;
+
             img {
               position: absolute;
               left: 73px;
@@ -284,13 +372,16 @@ export default {
               height: auto;
               top: -51px;
             }
+
             .step-index {
               transform: rotate(-15deg);
               margin-bottom: 32px;
             }
           }
+
           &.flex-3 {
             margin-top: 24px;
+
             img {
               position: absolute;
               left: 73px;
@@ -298,12 +389,15 @@ export default {
               height: auto;
               top: 0px;
             }
+
             .step-index {
               margin-bottom: 32px;
             }
           }
+
           &.flex-4 {
             margin-top: 107px;
+
             .step-index {
               margin-bottom: 32px;
               transform: rotate(15deg);
@@ -314,12 +408,14 @@ export default {
     }
   }
 }
+
 .flex-center-sb {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 .flex-start-sb {
   width: 100%;
   display: flex;
