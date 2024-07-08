@@ -44,8 +44,7 @@ export default {
         self.connect_wallet();
       });
       window.ethereum.on("accountsChanged", async (chainId) => {
-        console.log(web3)
-        let user = web3.getSigner();
+        let user = this.web3.getSigner();
         let wallet_address = await user.getAddress();
         console.log("changeWallet:", wallet_address);
         self.$store.commit("setAddress", { address: wallet_address });
